@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Spirit Custom Gear | EZ as Tap</title>
+    <style>
+        /* Core Theme Variables */
+        :root {
+            --bg-dark: #0f1014;
+            --bg-card: #1c1d24;
+            --accent: #4F81BD;
+            --accent-glow: rgba(79, 129, 189, 0.4);
+            --text-main: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --border: #333440;
+            --price-color: #4dc0b5;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, rgba(28,29,36,1) 0%, rgba(15,16,20,1) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* Card Setup */
+        .product-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.6), 0 0 15px var(--accent-glow);
+            border-color: var(--accent);
+        }
+
+        /* Interactive Carousel Container */
+        .image-container {
+            width: 100%;
+            height: 280px;
+            background-color: #111;
+            position: relative;
+            cursor: pointer; /* Tells the user it's clickable */
+            overflow: hidden;
+            /* Prevent text selection when tapping quickly on mobile */
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        /* The Crossfade Magic */
+        .carousel-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease;
+            z-index: 1;
+        }
+
+        /* Active image sits on top and fades in */
+        .carousel-item.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .product-card:hover .carousel-item.active {
+            transform: scale(1.03); /* Subtle zoom on hover */
+        }
+
+        /* Navigation Dots */
+        .carousel-indicators {
+            position: absolute;
+            bottom: 12px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            z-index: 3;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .dot.active {
+            background: var(--price-color);
+            transform: scale(1.2);
+            box-shadow: 0 0 5px var(--price-color);
+        }
+
+        /* UI Overlays */
+        .badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: rgba(0,0,0,0.7);
+            color: var(--price-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            border: 1px solid var(--price-color);
+            z-index: 4;
+            backdrop-filter: blur(4px);
+        }
+
+        .tap-hint {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.75em;
+            z-index: 3;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 8px;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        /* Fallback Placeholder */
+        .placeholder-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #222 10px, #222 20px);
+            color: #555;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: absolute;
+            z-index: 1;
+        }
+
+        /* Product Details */
+        .product-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            margin: 0 0 10px 0;
+            font-size: 1.15em;
+            line-height: 1.3;
+            flex-grow: 1;
+        }
+
+        .product-meta {
+            margin-bottom: 20px;
+        }
+
+        .price {
+            color: var(--price-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .buy-btn {
+            background-color: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .product-card:hover .buy-btn {
+            background-color: var(--accent);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Custom Spirit Gear</h1>
+        <p>Premium 3D Printed Hardware</p>
+    </header>
+
+    <div class="container">
+        <div id="store-gallery" class="gallery-grid">
+            <!-- JavaScript injects products here -->
+        </div>
+    </div>
+
+    <script>
+        // Cleaned up data arrays pulling multiple images/videos from your spreadsheet
+        const spreadsheetData = [
+            { 
+                id: "MNA-VB-ChMLED-01", name: 'Volleyball LED Chain "M" Blue/Light Blue', price: "$115.00", 
+                media: ["M-BLB-LUP-02.jpg", "M-BLB-LUP-03.jpg", "M-BLB-LUP-04.jpg"] 
+            },
+            { 
+                id: "MNA-VB-ChMLED-02", name: 'Volleyball LED Chain "M" Blue/Yellow', price: "$135.00", 
+                media: ["M-BY-LUP-01.jpg", "M-BY-LUP-01.mp4"] 
+            },
+            { 
+                id: "MNA-VB-ChMSLR-01", name: 'Volleyball SolarLED Chain "M" Blue/Light Blue', price: "$115.00", 
+                media: ["M-BLB-SLR-01-d.jpg", "M-BLB-SLR-01-l.jpg"] // Removed the duplicate from the sheet
+            },
+            { 
+                id: "MNA-FTB-ChFCE-01", name: 'Football Chain w/ Mascot Head', price: "$120.00", 
+                media: ["FCE-CHN-01-r.jpg", "FCE-CHN-01-l.jpg"] 
+            },
+            { 
+                id: "MNA-FTB-ChFCE-02", name: 'Football Chain w/ Mascot Head - Silk', price: "$75.00", 
+                media: ["FCE-CHN-02-r.jpg", "FCE-CHN-02-l.jpg"] 
+            },
+            { id: "MNA-FTB-ChFCE-03", name: 'Football Chain w/ Mascot Head - alt', price: "$65.00", media: [] },
+            { id: "MNA-FTB-FCE-01", name: 'Mascot Head w/out chain', price: "$40.00", media: [] },
+            { id: "MNA-FTB-M-01", name: 'Marina "M" Logo w/out chain', price: "$35.00", media: [] },
+            { id: "MNA-VB-KYCh-01", name: 'Volleyball Keychain with M logo LB on Blue', price: "$20.00", media: [] }
+        ];
+
+        // This function handles the click-to-crossfade logic
+        function nextMedia(event, element) {
+            // Find all media items and dots inside the clicked container
+            const items = element.querySelectorAll('.carousel-item');
+            const dots = element.querySelectorAll('.dot');
+            
+            // If there's only 1 image, don't do anything
+            if (items.length <= 1) return;
+
+            // Find currently active item
+            let activeIndex = 0;
+            items.forEach((item, index) => {
+                if(item.classList.contains('active')) activeIndex = index;
+            });
+
+            // Remove active state
+            items[activeIndex].classList.remove('active');
+            if(dots.length > 0) dots[activeIndex].classList.remove('active');
+
+            // Calculate next item index (loops back to 0 at the end)
+            let nextIndex = (activeIndex + 1) % items.length;
+
+            // Apply active state to next item
+            items[nextIndex].classList.add('active');
+            if(dots.length > 0) dots[nextIndex].classList.add('active');
+        }
+
+        function initGallery() {
+            const gallery = document.getElementById('store-gallery');
+            
+            spreadsheetData.forEach(item => {
+                const hasLED = item.name.includes("LED") || item.name.includes("Solar");
+                const badgeHTML = hasLED ? `<div class="badge">âš¡ LED ILLUMINATED</div>` : '';
+                
+                // Clean the media array (removes empties and generic 'assets' paths)
+                const validMedia = item.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
+                
+                let mediaHTML = '';
+                let indicatorsHTML = '';
+                let tapHint = '';
+
+                if (validMedia.length > 0) {
+                    // Generate the media tags (Images or Auto-playing Video)
+                    validMedia.forEach((file, index) => {
+                        const activeClass = index === 0 ? 'active' : '';
+                        const filePath = `assets/${file}`;
+                        
+                        if(file.endsWith('.mp4')) {
+                            mediaHTML += `<video src="${filePath}" class="carousel-item ${activeClass}" autoplay loop muted playsinline></video>`;
+                        } else {
+                            mediaHTML += `<img src="${filePath}" alt="${item.name}" class="carousel-item ${activeClass}" onerror="this.src='placeholder.jpg'">`;
+                        }
+                    });
+
+                    // Generate dots if there are multiple images
+                    if(validMedia.length > 1) {
+                        tapHint = `<div class="tap-hint">Tap for more</div>`;
+                        indicatorsHTML = `<div class="carousel-indicators">`;
+                        validMedia.forEach((_, index) => {
+                            const activeClass = index === 0 ? 'active' : '';
+                            indicatorsHTML += `<span class="dot ${activeClass}"></span>`;
+                        });
+                        indicatorsHTML += `</div>`;
+                    }
+                } else {
+                    // Fallback if no images are loaded
+                    mediaHTML = `<div class="placeholder-img">Image Coming Soon</div>`;
+                }
+
+                // Build the final Card
+                const cardHTML = `
+                    <div class="product-card">
+                        ${badgeHTML}
+                        <div class="image-container" onclick="nextMedia(event, this)">
+                            ${mediaHTML}
+                            ${indicatorsHTML}
+                            ${tapHint}
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">${item.name}</h3>
+                            <div class="product-meta">
+                                <p class="price">${item.price}</p>
+                            </div>
+                            <button class="buy-btn">Inquire / Quote</button>
+                        </div>
+                    </div>
+                `;
+                
+                gallery.innerHTML += cardHTML;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initGallery);
+    </script>
+</body>
+</html>
