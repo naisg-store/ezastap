@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZ as Tap - Interactive Price Sheet & Custom NFC Keychains</title>
+    <style>
+        :root {
+            --bg-dark: #0a0f1d;
+            --card-bg: rgba(19, 27, 46, 0.92);
+            --panel-bg: #18233c;
+            --accent-blue: #00a2ff;
+            --accent-cyan: #00d2ff;
+            --text-light: #ecf0f1;
+            --text-muted: #8a99ad;
+            --border-color: #1e2d4a;
+            --success-green: #2ecc71;
+            --promo-gold: #ffb703;
+            --promo-red: #ff4d4d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.5;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* HERO & PARALLAX VIDEO CONTAINER */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .parallax-video-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .parallax-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.35;
+            will-change: transform;
+            transition: transform 0.05s linear;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(10, 15, 29, 0.5) 0%, rgba(10, 15, 29, 0.88) 100%);
+            z-index: 2;
+        }
+
+        /* HERO CONTENT LAYOUT */
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .logo-wrapper {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            width: 220px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+            mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+            filter: drop-shadow(0 0 15px rgba(0, 162, 255, 0.3));
+        }
+
+        .hero-text {
+            text-align: left;
+            flex: 1;
+        }
+
+        h1 {
+            color: var(--accent-blue);
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.35rem;
+            font-weight: 600;
+            line-height: 1.3;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+            opacity: 0.95;
+        }
+
+        @media (max-width: 650px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 30px 15px;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .logo {
+                width: 170px;
+            }
+
+            h1 {
+                font-size: 2.3rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 0 15px 30px 15px;
+            position: relative;
+            z-index: 4;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            color: var(--accent-cyan);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .description {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        /* LOCAL PROMO / WAIVED DESIGN TOGGLE CONTROL */
+        .toggle-banner {
+            background: linear-gradient(135deg, rgba(0, 162, 255, 0.15), rgba(46, 204, 113, 0.15));
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-info {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .toggle-info h3 {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 56px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-switch {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--panel-bg);
+            transition: .3s;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .slider-switch:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-muted);
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider-switch {
+            background-color: var(--success-green);
+            border-color: var(--success-green);
+        }
+
+        input:checked + .slider-switch:before {
+            transform: translateX(26px);
+            background-color: #fff;
+        }
+
+        .switch-label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* STRIRETHROUGH & PROMO PRICING STYLES */
+        .strikethrough {
+            text-decoration: line-through;
+            color: var(--promo-red);
+            font-weight: normal;
+            font-size: 0.88em;
+            margin-right: 6px;
+            opacity: 0.85;
+        }
+
+        .sale-highlight {
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .savings-badge {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-green);
+            border: 1px solid var(--success-green);
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 6px;
+        }
+
+        /* CALCULATOR GRID */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 650px) {
+            .calc-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .quantity-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .qty-stepper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--accent-blue);
+            color: var(--text-light);
+            font-size: 1.6rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .step-btn:active {
+            transform: scale(0.92);
+            background-color: var(--accent-blue);
+        }
+
+        .qty-display-wrapper {
+            flex: 1;
+            text-align: center;
+        }
+
+        .qty-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            line-height: 1;
+        }
+
+        .qty-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* RANGE SLIDER */
+        .slider-container {
+            margin-bottom: 20px;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: var(--panel-bg);
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 28px;
+            width: 28px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -10px;
+            box-shadow: 0 0 12px rgba(0, 210, 255, 0.6);
+        }
+
+        .slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            padding: 0 5px;
+            margin-top: 6px;
+        }
+
+        .tier-explanation {
+            background-color: rgba(0, 162, 255, 0.08);
+            border-left: 3px solid var(--accent-blue);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        /* PRICE BREAKDOWN PANEL */
+        .price-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .price-row.total {
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.35rem;
+            font-weight: bold;
+            color: var(--accent-cyan);
+        }
+
+        .badge-free {
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .disclaimer {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+
+        /* TABLE STYLING */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: var(--panel-bg);
+            color: var(--accent-cyan);
+            padding: 12px 10px;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-light);
+        }
+
+        tr.active-tier {
+            background-color: rgba(0, 162, 255, 0.18);
+            font-weight: bold;
+        }
+
+        tr.active-tier td {
+            color: #fff;
+            border-bottom: 1px solid var(--accent-blue);
+        }
+
+        /* ACCORDIONS */
+        .accordion {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            background-color: var(--panel-bg);
+        }
+
+        .accordion-header {
+            padding: 15px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            user-select: none;
+        }
+
+        .accordion-header:hover {
+            background-color: rgba(255,255,255,0.03);
+        }
+
+        .accordion-icon {
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 15px 18px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background-color: var(--card-bg);
+            line-height: 1.6;
+        }
+
+        .accordion-content ul {
+            padding-left: 20px;
+        }
+
+        .accordion-content li {
+            margin-bottom: 8px;
+        }
+
+        .accordion.open .accordion-content {
+            display: block;
+        }
+
+        .accordion.open .accordion-icon {
+            transform: rotate(45deg);
+        }
+
+        /* FORM STYLING */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-light);
+        }
+
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn:active {
+            opacity: 0.85;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer-contacts {
+            margin-top: 8px;
+            color: var(--text-light);
+        }
+
+        .footer-contacts a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HERO HEADER WITH PARALLAX VIDEO BACKGROUND & FADED LOGO -->
+<div class="hero-section">
+    <div class="parallax-video-wrapper">
+        <video class="parallax-video" id="heroVideo" autoplay loop muted playsinline>
+            <source src="nfc-keychain-hero.mp4" type="video/mp4">
+            Your browser does not support video background.
+        </video>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="logo-wrapper">
+            <img src="EZ-logo-color.png" alt="EZ as Tap Logo" class="logo">
+        </div>
+        <div class="hero-text">
+            <h1>EZ as Tap</h1>
+            <p class="subtitle">Custom NFC Keychains &mdash; Interactive Price Sheet</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- CALCULATOR CARD -->
+    <div class="card">
+        <h2 class="section-title">Get Your Price</h2>
+        
+        <!-- PROMO / VECTOR-READY TOGGLE BANNER -->
+        <div class="toggle-banner">
+            <div class="toggle-info">
+                <h3>🏷️ Local Business / Sample Promo</h3>
+                <p>Toggle this ON if we already prepped/vectorized your logo or printed you a sample.</p>
+            </div>
+            <label class="switch-container">
+                <div class="switch">
+                    <input type="checkbox" id="waiveFeeToggle" onchange="recalculate()">
+                    <span class="slider-switch"></span>
+                </div>
+                <span class="switch-label" id="toggleStatusLabel">Standard Pricing</span>
+            </label>
+        </div>
+
+        <p class="description">
+            Move the slider to your desired quantity. Covers one logo placed on a standard keychain shape with one shared link — the setup most local businesses use.
+        </p>
+
+        <div class="calc-grid">
+            <!-- LEFT COLUMN: CONTROLS -->
+            <div class="quantity-section">
+                <div class="qty-stepper">
+                    <button class="step-btn" onclick="adjustQty(-1)">−</button>
+                    <div class="qty-display-wrapper">
+                        <div class="qty-number" id="qtyDisplay">25</div>
+                        <div class="qty-label">Keychains</div>
+                    </div>
+                    <button class="step-btn" onclick="adjustQty(1)">+</button>
+                </div>
+
+                <div class="slider-container">
+                    <input type="range" id="qtySlider" min="4" max="150" step="1" value="25" oninput="updateQty(this.value)">
+                    <div class="slider-ticks">
+                        <span>4</span>
+                        <span>50</span>
+                        <span>100</span>
+                        <span>150+</span>
+                    </div>
+                </div>
+
+                <div class="tier-explanation" id="tierExplanation">
+                    Loading tier details...
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: PRICE BREAKDOWN -->
+            <div class="price-panel">
+                <div>
+                    <div class="price-row">
+                        <span>Unit price:</span>
+                        <span id="unitPrice">$19.00</span>
+                    </div>
+                    <div class="price-row">
+                        <span><span id="subtotalQty">25</span> &times; unit price:</span>
+                        <span id="itemsSubtotal">$475.00</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Setup / artwork fee:</span>
+                        <span id="setupFee">Included</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="price-row total">
+                        <span>Estimated Total:</span>
+                        <span id="grandTotal">$475.00</span>
+                    </div>
+                    <p class="disclaimer">
+                        Plus sales tax. Doesn't include shipping, personalization, unique links per tag, or custom shapes — we'll go over any of those directly if you want them.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIER COMPARISON TABLE -->
+    <div class="card">
+        <h2 class="section-title">Every Tier, Side by Side</h2>
+        <p class="description">Bigger runs cost less per piece and waive the setup fee once your logo is ready to use.</p>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Quantity</th>
+                        <th>Per Unit</th>
+                        <th>Setup Fee</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="tierTableBody">
+                    <!-- Dynamic Table Contents rendered by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <p class="disclaimer" style="margin-top: 12px;">
+            *Included when your logo is ready-to-use vector art (SVG, AI, EPS), on a standard shape, one design, one shared link. Otherwise a setup fee applies.
+        </p>
+    </div>
+
+    <!-- EXPANDABLE DETAILS / ACCORDIONS -->
+    <div class="card">
+        <h2 class="section-title">Details & What to Expect</h2>
+
+        <div class="accordion open" onclick="toggleAccordion(this)">
+            <div class="accordion-header">
+                <span>Included in the price above <small style="color: var(--accent-cyan); font-weight: normal;">(What you don't get billed for)</small></span>
+                <span class="accordion-icon">+</span>
+            </div>
+            <div class="accordion-content">
+                <ul>
+                    <li>Placing your logo on one of our standard keychain shapes.</li>
+                    <li>One digital proof, plus one round of minor revisions.</li>
+                    <li>Programming the NFC chip with your one shared link.</li>
+                    <li>Setup is free at 25+ pieces (or completely waived under local prepped sample promos).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="accordion" onclick="toggleAccordion(this)">
+            <div class="accordion-header">
+                <span>Worth asking about later <small style="color: var(--text-muted); font-weight: normal;">(Things that can add cost)</small></span>
+                <span class="accordion-icon">+</span>
+            </div>
+            <div class="accordion-content">
+                <ul>
+                    <li>Logo isn't vector art yet, or needs complex redrawing/cleanup ($75–$125 artwork prep).</li>
+                    <li>A fully custom physical outline/shape instead of a standard one.</li>
+                    <li>Personalized names or numbers printed on each keychain ($2.00/unit).</li>
+                    <li>A different unique link on every single keychain, instead of one shared link ($2.00/unit).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="accordion" onclick="toggleAccordion(this)">
+            <div class="accordion-header">
+                <span>What decides whether artwork setup is extra?</span>
+                <span class="accordion-icon">+</span>
+            </div>
+            <div class="accordion-content">
+                <p>If you have an original vector file (.SVG, .AI, .EPS, or vector .PDF) or if we already vectorized your artwork for a sample print, setup is 100% free! If you only have a low-res PNG/JPG, screenshot, or artwork that needs to be recreated from scratch, standard setup fees apply for small batches.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUEST A QUOTE FORM -->
+    <div class="card">
+        <h2 class="section-title">Request a Quote</h2>
+        <p class="description">
+            This doesn't place an order or charge anything — it opens a message in your email app with these details filled in, ready for you to review and send.
+        </p>
+
+        <form onsubmit="handleFormSubmit(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="bizName">Business name *</label>
+                    <input type="text" id="bizName" required placeholder="Acme Cafe">
+                </div>
+                <div class="form-group">
+                    <label for="yourName">Your name *</label>
+                    <input type="text" id="yourName" required placeholder="Jane Doe">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="clientEmail">Email *</label>
+                    <input type="email" id="clientEmail" required placeholder="jane@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="clientPhone">Phone (optional)</label>
+                    <input type="text" id="clientPhone" placeholder="(555) 000-0000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="nfcUrl">What should the tap open?</label>
+                <input type="text" id="nfcUrl" placeholder="Google Review Link, Website, Instagram, Menu Link, etc.">
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Anything else we should know?</label>
+                <textarea id="notes" rows="3" placeholder="Logo notes, special requests, timeline, or questions..."></textarea>
+            </div>
+
+            <button type="submit" class="btn">Compose Quote Request</button>
+
+            <p class="disclaimer" style="text-align: center; margin-top: 15px;">
+                Quantity carries over from the calculator above (<span id="formQtyNotice">25</span> pieces). Change it up there any time before sending.
+            </p>
+        </form>
+    </div>
+
+    <footer>
+        <p><strong>EZ as Tap</strong> &mdash; Custom NFC Keychains, Made Locally</p>
+        <p class="footer-contacts">
+            Prefer to just reach out? <a href="mailto:ezastap@gmail.com">ezastap@gmail.com</a>
+        </p>
+        <p style="font-size: 0.75rem; margin-top: 10px; color: var(--text-muted);">
+            Prices are current estimates and subject to artwork verification.
+        </p>
+    </footer>
+</div>
+
+<script>
+    // PARALLAX EFFECT FOR HERO VIDEO
+    window.addEventListener('scroll', function() {
+        const video = document.getElementById('heroVideo');
+        if (video) {
+            let scrolled = window.scrollY;
+            video.style.transform = 'translateY(' + (scrolled * 0.35) + 'px)';
+        }
+    });
+
+    function toggleAccordion(element) {
+        element.classList.toggle('open');
+    }
+
+    function adjustQty(amount) {
+        const slider = document.getElementById('qtySlider');
+        let current = parseInt(slider.value) || 4;
+        let next = current + amount;
+        if (next < 4) next = 4;
+        if (next > 150) next = 150;
+        slider.value = next;
+        updateQty(next);
+    }
+
+    function recalculate() {
+        const slider = document.getElementById('qtySlider');
+        updateQty(slider.value);
+    }
+
+    function updateQty(value) {
+        const qty = parseInt(value);
+        const isFeeWaived = document.getElementById('waiveFeeToggle').checked;
+        const toggleLabel = document.getElementById('toggleStatusLabel');
+        
+        if (isFeeWaived) {
+            toggleLabel.innerText = "Local Promo (Art Fee Waived)";
+            toggleLabel.style.color = "var(--success-green)";
+        } else {
+            toggleLabel.innerText = "Standard Pricing";
+            toggleLabel.style.color = "var(--text-light)";
+        }
+
+        document.getElementById('qtyDisplay').innerText = qty >= 150 ? "150+" : qty;
+        document.getElementById('subtotalQty').innerText = qty >= 150 ? "150" : qty;
+        document.getElementById('formQtyNotice').innerText = qty >= 150 ? "150+" : qty;
+
+        let unitPrice = 0;
+        let stdSetupFee = 0;
+        let effectiveSetupFee = 0;
+        let explanationText = "";
+        let isCustom = false;
+        let activeTierIndex = 1;
+
+        if (qty < 4) {
+            explanationText = "Minimum order quantity is 4 units.";
+            isCustom = true;
+            activeTierIndex = 1;
+        } else if (qty <= 8) {
+            unitPrice = 22.00;
+            stdSetupFee = 125.00;
+            activeTierIndex = 1;
+        } else if (qty <= 17) {
+            unitPrice = 21.00;
+            stdSetupFee = 100.00;
+            activeTierIndex = 2;
+        } else if (qty <= 24) {
+            unitPrice = 20.00;
+            stdSetupFee = 75.00;
+            activeTierIndex = 3;
+        } else if (qty <= 49) {
+            unitPrice = 19.00;
+            stdSetupFee = 0;
+            activeTierIndex = 4;
+        } else if (qty <= 99) {
+            unitPrice = 18.00;
+            stdSetupFee = 0;
+            activeTierIndex = 5;
+        } else if (qty <= 149) {
+            unitPrice = 17.00;
+            stdSetupFee = 0;
+            activeTierIndex = 6;
+        } else {
+            isCustom = true;
+            activeTierIndex = 7;
+        }
+
+        effectiveSetupFee = isFeeWaived ? 0 : stdSetupFee;
+
+        // Build Explanation Text
+        if (!isCustom) {
+            if (isFeeWaived) {
+                if (stdSetupFee > 0) {
+                    explanationText = `<strong>Local Promo Active:</strong> $${unitPrice.toFixed(2)}/unit. We've waived the standard <strong>$${stdSetupFee.toFixed(2)}</strong> design setup fee!`;
+                } else {
+                    explanationText = `<strong>Local Promo Active:</strong> $${unitPrice.toFixed(2)}/unit. Setup is already included for batches of 25+ keychains!`;
+                }
+            } else {
+                if (stdSetupFee > 0) {
+                    explanationText = `<strong>Standard Tier:</strong> $${unitPrice.toFixed(2)} per unit + $${stdSetupFee.toFixed(2)} design setup fee.`;
+                } else {
+                    explanationText = `<strong>Volume Tier:</strong> $${unitPrice.toFixed(2)} per unit. Basic setup included with ready vector art.`;
+                }
+            }
+        } else {
+            explanationText = `<strong>150+ pieces:</strong> Contact us directly for a custom bulk quote and capacity scheduling.`;
+        }
+
+        document.getElementById('tierExplanation').innerHTML = explanationText;
+
+        // Update Side-by-Side Table dynamically based on toggle state
+        renderTable(activeTierIndex, isFeeWaived);
+
+        if (isCustom && qty >= 150) {
+            document.getElementById('unitPrice').innerText = "Custom";
+            document.getElementById('itemsSubtotal').innerText = "Custom";
+            document.getElementById('setupFee').innerText = "Custom";
+            document.getElementById('grandTotal').innerText = "Contact Us";
+            return;
+        }
+
+        const itemsSubtotal = qty * unitPrice;
+        const stdTotal = itemsSubtotal + stdSetupFee;
+        const actualTotal = itemsSubtotal + effectiveSetupFee;
+
+        document.getElementById('unitPrice').innerText = "$" + unitPrice.toFixed(2);
+        document.getElementById('itemsSubtotal').innerText = "$" + itemsSubtotal.toFixed(2);
+        
+        // Render Setup Fee & Totals with Strikethroughs if Discount Active
+        if (isFeeWaived && stdSetupFee > 0) {
+            document.getElementById('setupFee').innerHTML = `<span class="strikethrough">$${stdSetupFee.toFixed(2)}</span><span class="badge-free">WAIVED</span>`;
+            document.getElementById('grandTotal').innerHTML = `<span class="strikethrough">$${stdTotal.toFixed(2)}</span><span class="sale-highlight">$${actualTotal.toFixed(2)}</span> <span class="savings-badge">Save $${stdSetupFee.toFixed(2)}</span>`;
+        } else {
+            if (effectiveSetupFee === 0) {
+                document.getElementById('setupFee').innerHTML = '<span class="badge-free">Included*</span>';
+            } else {
+                document.getElementById('setupFee').innerText = "$" + effectiveSetupFee.toFixed(2);
+            }
+            document.getElementById('grandTotal').innerText = "$" + actualTotal.toFixed(2);
+        }
+    }
+
+    function renderTable(activeIdx, isFeeWaived) {
+        const tiers = [
+            { range: "4–8 pieces", price: "$22.00", stdFee: "$125.00", note: "Small custom run" },
+            { range: "9–17 pieces", price: "$21.00", stdFee: "$100.00", note: "Efficient batch size" },
+            { range: "18–24 pieces", price: "$20.00", stdFee: "$75.00", note: "Setup partially reduced" },
+            { range: "25–49 pieces", price: "$19.00", stdFee: "Included*", note: "Free setup at 25+ pieces" },
+            { range: "50–99 pieces", price: "$18.00", stdFee: "Included*", note: "Free setup at 25+ pieces" },
+            { range: "100–149 pieces", price: "$17.00", stdFee: "Included*", note: "Free setup & volume rate" },
+            { range: "150+ pieces", price: "Custom", stdFee: "Custom", note: "Manual custom quote required" }
+        ];
+
+        let html = "";
+        tiers.forEach((t, i) => {
+            const idx = i + 1;
+            const isActive = (idx === activeIdx);
+            let feeDisplay = t.stdFee;
+
+            if (isFeeWaived) {
+                if (t.stdFee !== "Included*" && t.stdFee !== "Custom") {
+                    feeDisplay = `<span class="strikethrough">${t.stdFee}</span><span class="badge-free">WAIVED</span>`;
+                } else if (t.stdFee === "Included*") {
+                    feeDisplay = `<span class="badge-free">FREE</span>`;
+                }
+            } else if (t.stdFee === "Included*") {
+                feeDisplay = `<span class="badge-free">Included*</span>`;
+            }
+
+            html += `<tr class="${isActive ? 'active-tier' : ''}">
+                <td>${t.range}</td>
+                <td>${t.price}</td>
+                <td>${feeDisplay}</td>
+                <td>${t.note}</td>
+            </tr>`;
+        });
+
+        document.getElementById('tierTableBody').innerHTML = html;
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        
+        const bizName = document.getElementById('bizName').value;
+        const yourName = document.getElementById('yourName').value;
+        const email = document.getElementById('clientEmail').value;
+        const phone = document.getElementById('clientPhone').value || "Not provided";
+        const qty = document.getElementById('qtySlider').value;
+        const url = document.getElementById('nfcUrl').value || "Not provided yet";
+        const total = document.getElementById('grandTotal').innerText;
+        const notes = document.getElementById('notes').value || "None";
+        const isFeeWaived = document.getElementById('waiveFeeToggle').checked;
+
+        const promoStatus = isFeeWaived ? "YES - Local Promo (Waived Artwork Setup Fee)" : "Standard Pricing";
+
+        const subject = encodeURIComponent(`NFC Keychain Quote Request - ${bizName}`);
+        const body = encodeURIComponent(
+            `Hi EZ as Tap,\n\n` +
+            `I would like to request a formal quote for custom NFC keychains.\n\n` +
+            `Business Name: ${bizName}\n` +
+            `Contact Name: ${yourName}\n` +
+            `Email: ${email}\n` +
+            `Phone: ${phone}\n\n` +
+            `Quantity Requested: ${qty}\n` +
+            `Local Sample / Waived Art Fee Promo Applied: ${promoStatus}\n` +
+            `NFC Tap Destination: ${url}\n` +
+            `Estimated Total Quote: ${total}\n\n` +
+            `Additional Notes / Artwork Details:\n${notes}\n\n` +
+            `Please reach out to finalize artwork proofing and next steps.`
+        );
+
+        window.location.href = `mailto:ezastap@gmail.com?subject=${subject}&body=${body}`;
+    }
+
+    // Initialize calculator state on load
+    updateQty(25);
+</script>
+
+</body>
+</html>
