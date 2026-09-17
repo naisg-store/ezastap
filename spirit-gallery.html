@@ -36,14 +36,10 @@
         header h1 {
             margin: 0;
             font-size: 2.2em;
-            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
-        header p {
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
+        header p { color: var(--text-muted); margin-top: 5px; }
 
         .container {
             max-width: 1300px;
@@ -67,82 +63,78 @@
             flex-direction: column;
             position: relative;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
 
         .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.6), 0 0 15px var(--accent-glow);
+            transform: translateY(-4px);
             border-color: var(--accent);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 0 10px var(--accent-glow);
         }
 
-        /* Interactive Carousel Container */
+        /* Swiping Carousel Setup */
         .image-container {
             width: 100%;
             height: 280px;
-            background-color: #111;
             position: relative;
-            cursor: pointer; /* Tells the user it's clickable */
-            overflow: hidden;
-            /* Prevent text selection when tapping quickly on mobile */
-            user-select: none; 
-            -webkit-tap-highlight-color: transparent; 
+            background-color: #111;
         }
 
-        /* The Crossfade Magic */
-        .carousel-item {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .image-carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE */
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.4s ease-in-out, transform 0.4s ease;
-            z-index: 1;
+            scroll-behavior: smooth;
         }
+        
+        .image-carousel::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
 
-        /* Active image sits on top and fades in */
-        .carousel-item.active {
-            opacity: 1;
-            z-index: 2;
-        }
-
-        .product-card:hover .carousel-item.active {
-            transform: scale(1.03); /* Subtle zoom on hover */
-        }
-
-        /* Navigation Dots */
-        .carousel-indicators {
-            position: absolute;
-            bottom: 12px;
+        .carousel-item {
+            flex: 0 0 100%;
             width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            z-index: 3;
+            height: 100%;
+            /* This fixes your crop issue! Anchors to bottom, crops the top */
+            object-fit: cover;
+            object-position: bottom; 
+            scroll-snap-align: start;
+            cursor: zoom-in; /* Tells user they can click to expand */
         }
 
-        .dot {
-            width: 8px;
-            height: 8px;
+        /* Mini Nav Arrows for Cards */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: 1px solid var(--border);
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transition: background 0.3s, transform 0.3s;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            backdrop-filter: blur(2px);
+            transition: background 0.2s;
         }
 
-        .dot.active {
-            background: var(--price-color);
-            transform: scale(1.2);
-            box-shadow: 0 0 5px var(--price-color);
-        }
+        .nav-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .nav-btn.prev { left: 8px; }
+        .nav-btn.next { right: 8px; }
 
-        /* UI Overlays */
+        /* Badges & Fallbacks */
         .badge {
             position: absolute;
             top: 12px;
-            right: 12px;
-            background-color: rgba(0,0,0,0.7);
+            left: 12px;
+            background-color: rgba(0,0,0,0.8);
             color: var(--price-color);
             padding: 4px 10px;
             border-radius: 20px;
@@ -151,22 +143,9 @@
             border: 1px solid var(--price-color);
             z-index: 4;
             backdrop-filter: blur(4px);
-        }
-
-        .tap-hint {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            color: rgba(255,255,255,0.6);
-            font-size: 0.75em;
-            z-index: 3;
-            background: rgba(0,0,0,0.5);
-            padding: 2px 8px;
-            border-radius: 10px;
             pointer-events: none;
         }
 
-        /* Fallback Placeholder */
         .placeholder-img {
             display: flex;
             align-items: center;
@@ -178,37 +157,13 @@
             font-size: 0.9em;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            position: absolute;
-            z-index: 1;
         }
 
         /* Product Details */
-        .product-info {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .product-title {
-            margin: 0 0 10px 0;
-            font-size: 1.15em;
-            line-height: 1.3;
-            flex-grow: 1;
-        }
-
-        .product-meta {
-            margin-bottom: 20px;
-        }
-
-        .price {
-            color: var(--price-color);
-            font-size: 1.5em;
-            font-weight: 700;
-            margin: 0;
-        }
-
+        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { margin: 0 0 10px 0; font-size: 1.15em; line-height: 1.3; flex-grow: 1; }
+        .price { color: var(--price-color); font-size: 1.5em; font-weight: 700; margin: 0 0 20px 0; }
+        
         .buy-btn {
             background-color: transparent;
             color: var(--accent);
@@ -222,11 +177,76 @@
             text-transform: uppercase;
             transition: all 0.2s ease;
         }
+        .product-card:hover .buy-btn { background-color: var(--accent); color: #fff; }
 
-        .product-card:hover .buy-btn {
-            background-color: var(--accent);
-            color: #fff;
+        /* Full Screen Lightbox Styling */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 15, 0.98);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content img, .lightbox-content video {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .lb-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: color 0.2s;
+            z-index: 10000;
+        }
+        .lb-close:hover { color: var(--accent); }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            padding: 20px;
+            user-select: none;
+            transition: color 0.2s;
+        }
+        .lb-nav:hover { color: var(--accent); }
+        .lb-prev { left: 10px; }
+        .lb-next { right: 10px; }
+
+        .lb-counter {
+            position: absolute;
+            bottom: 30px;
+            color: var(--text-muted);
+            font-family: monospace;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+        }
+
     </style>
 </head>
 <body>
@@ -242,120 +262,156 @@
         </div>
     </div>
 
+    <!-- The Full-Screen Lightbox Container -->
+    <div id="lightbox" class="lightbox">
+        <div class="lb-close" onclick="closeLightbox()">&#215;</div>
+        <div class="lb-nav lb-prev" onclick="navigateLightbox(-1)">&#10094;</div>
+        
+        <div class="lightbox-content" id="lb-media-container">
+            <!-- Media injected here -->
+        </div>
+        
+        <div class="lb-nav lb-next" onclick="navigateLightbox(1)">&#10095;</div>
+        <div class="lb-counter" id="lb-counter">1 / 1</div>
+    </div>
+
     <script>
-        // Cleaned up data arrays pulling multiple images/videos from your spreadsheet
-        // Added the 'active' flag to each item
         const spreadsheetData = [
             { 
                 id: "MNA-VB-ChMLED-01", name: 'Volleyball LED Chain "M" Blue/Light Blue', price: "$115.00", 
-                media: ["M-BLB-LUP-04.jpg", "M-BLB-LUP-03.jpg", "M-BLB-LUP-01.mp4"],
-                active: "Yes"
+                media: ["M-BLB-LUP-02.jpg", "M-BLB-LUP-03.jpg", "M-BLB-LUP-04.jpg"], active: "y" 
             },
             { 
                 id: "MNA-VB-ChMLED-02", name: 'Volleyball LED Chain "M" Blue/Yellow', price: "$135.00", 
-                media: ["M-BY-LUP-01.jpg", "M-BY-LUP-02.mp4"],
-                active: "Yes" 
+                media: ["M-BY-LUP-01.jpg", "M-BY-LUP-01.mp4"], active: "y" 
             },
             { 
                 id: "MNA-VB-ChMSLR-01", name: 'Volleyball SolarLED Chain "M" Blue/Light Blue', price: "$115.00", 
-                media: ["M-BLB-SLR-01-d.jpg", "M-BLB-SLR-01-l.jpg"],
-                active: "yes"
+                media: ["M-BLB-SLR-01-d.jpg", "M-BLB-SLR-01-l.jpg"], active: "y" 
             },
             { 
                 id: "MNA-FTB-ChFCE-01", name: 'Football Chain w/ Mascot Head', price: "$65.00", 
-                media: ["FCE-CHN-01-r.jpg", "FCE-CHN-01-l.jpg"],
-                active: "Yes"
+                media: ["FCE-CHN-01-r.jpg", "FCE-CHN-01-l.jpg"], active: "y" 
             },
             { 
-                id: "MNA-FTB-ChFCE-02", name: 'Football Chain w/ Mascot Head - Silk', price: "$65.00", 
-                media: ["FCE-CHN-02-r.jpg", "FCE-CHN-02-l.jpg"],
-                active: "Yes" // This will be hidden
-            },
-            { id: "MNA-FTB-ChFCE-03", name: 'Football Chain w/ Mascot Head - alt', price: "$65.00", media: [], active: "No" }, // Hidden
-            { id: "MNA-FTB-FCE-01", name: 'Mascot Head w/out chain', price: "$50.00", media: [], active: "No" }, // Hidden
-            { id: "MNA-FTB-M-01", name: 'Marina "M" Logo w/out chain', price: "$45.00", media: [], active: "No" },
-            { id: "MNA-VB-KYCh-01", name: 'Volleyball Keychain with M logo LB on Blue', price: "$20.00", media: [], active: "No" },
-            { id: "MNA-VB-KYCh-02", name: 'Volleyball Keychain with M logo LB on White', price: "$20.00", media: [], active: "No" }
+                id: "MNA-FTB-M-01", name: 'Marina "M" Logo w/out chain', price: "$35.00", media: [], active: "y" },
+            { 
+                id: "MNA-VB-KYCh-01", name: 'Volleyball Keychain with M logo', price: "$20.00", media: [], active: "y" }
         ];
 
-        function nextMedia(event, element) {
-            const items = element.querySelectorAll('.carousel-item');
-            const dots = element.querySelectorAll('.dot');
-            if (items.length <= 1) return;
+        let activeProducts = [];
 
-            let activeIndex = 0;
-            items.forEach((item, index) => {
-                if(item.classList.contains('active')) activeIndex = index;
-            });
-
-            items[activeIndex].classList.remove('active');
-            if(dots.length > 0) dots[activeIndex].classList.remove('active');
-
-            let nextIndex = (activeIndex + 1) % items.length;
-
-            items[nextIndex].classList.add('active');
-            if(dots.length > 0) dots[nextIndex].classList.add('active');
+        // Slides the mini-carousel left or right when clicking arrows
+        function slideCarousel(event, direction) {
+            event.stopPropagation(); // Prevents the lightbox from opening
+            const container = event.target.closest('.image-container').querySelector('.image-carousel');
+            const scrollAmount = container.offsetWidth; // slide exactly one image width
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
+        // ---- LIGHTBOX LOGIC ----
+        let lbMediaArray = [];
+        let lbCurrentIndex = 0;
+
+        function openLightbox(productId, clickedIndex) {
+            const product = activeProducts.find(p => p.id === productId);
+            if(!product) return;
+            
+            // Get valid media
+            lbMediaArray = product.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
+            if(lbMediaArray.length === 0) return; // Ignore if no images
+
+            lbCurrentIndex = clickedIndex;
+            updateLightboxView();
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.getElementById('lb-media-container').innerHTML = ''; // Stops videos from playing in background
+        }
+
+        function navigateLightbox(direction) {
+            lbCurrentIndex += direction;
+            // Loop around if reaching the ends
+            if(lbCurrentIndex < 0) lbCurrentIndex = lbMediaArray.length - 1;
+            if(lbCurrentIndex >= lbMediaArray.length) lbCurrentIndex = 0;
+            updateLightboxView();
+        }
+
+        function updateLightboxView() {
+            const container = document.getElementById('lb-media-container');
+            const file = lbMediaArray[lbCurrentIndex];
+            const filePath = `assets/${file}`;
+            
+            if(file.endsWith('.mp4')) {
+                container.innerHTML = `<video src="${filePath}" controls autoplay playsinline></video>`;
+            } else {
+                container.innerHTML = `<img src="${filePath}">`;
+            }
+            
+            document.getElementById('lb-counter').innerText = `${lbCurrentIndex + 1} / ${lbMediaArray.length}`;
+            
+            // Hide arrows if only 1 image
+            const arrows = document.querySelectorAll('.lb-nav');
+            arrows.forEach(arrow => arrow.style.display = lbMediaArray.length > 1 ? 'block' : 'none');
+        }
+
+        // ---- BUILD THE GALLERY ----
         function initGallery() {
             const gallery = document.getElementById('store-gallery');
             
-            // THE NEW FILTER: Only keep items where 'active' starts with 'y' or 'Y'
-            const activeProducts = spreadsheetData.filter(item => {
+            // Filter active items
+            activeProducts = spreadsheetData.filter(item => {
                 if (!item.active) return false;
-                const flag = item.active.trim().toLowerCase();
-                return flag === 'yes' || flag === 'y';
+                return item.active.trim().toLowerCase() === 'y' || item.active.trim().toLowerCase() === 'yes';
             });
             
-            // Now build the gallery using only the activeProducts
             activeProducts.forEach(item => {
                 const hasLED = item.name.includes("LED") || item.name.includes("Solar");
-                const badgeHTML = hasLED ? `<div class="badge">⚡ LED ILLUMINATED</div>` : '';
+                const badgeHTML = hasLED ? `<div class="badge">⚡ LED</div>` : '';
                 
                 const validMedia = item.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
                 
-                let mediaHTML = '';
-                let indicatorsHTML = '';
-                let tapHint = '';
+                let carouselHTML = '';
+                let arrowsHTML = '';
 
                 if (validMedia.length > 0) {
+                    carouselHTML = `<div class="image-carousel">`;
                     validMedia.forEach((file, index) => {
-                        const activeClass = index === 0 ? 'active' : '';
                         const filePath = `assets/${file}`;
+                        // Add click event to open Lightbox
+                        const clickAction = `onclick="openLightbox('${item.id}', ${index})"`;
                         
                         if(file.endsWith('.mp4')) {
-                            mediaHTML += `<video src="${filePath}" class="carousel-item ${activeClass}" autoplay loop muted playsinline></video>`;
+                            carouselHTML += `<video src="${filePath}" class="carousel-item" autoplay loop muted playsinline ${clickAction}></video>`;
                         } else {
-                            mediaHTML += `<img src="${filePath}" alt="${item.name}" class="carousel-item ${activeClass}" onerror="this.src='placeholder.jpg'">`;
+                            carouselHTML += `<img src="${filePath}" class="carousel-item" onerror="this.src='placeholder.jpg'" ${clickAction}>`;
                         }
                     });
+                    carouselHTML += `</div>`;
 
+                    // Only add mini arrows if there is more than 1 image
                     if(validMedia.length > 1) {
-                        tapHint = `<div class="tap-hint">Tap for more</div>`;
-                        indicatorsHTML = `<div class="carousel-indicators">`;
-                        validMedia.forEach((_, index) => {
-                            const activeClass = index === 0 ? 'active' : '';
-                            indicatorsHTML += `<span class="dot ${activeClass}"></span>`;
-                        });
-                        indicatorsHTML += `</div>`;
+                        arrowsHTML = `
+                            <button class="nav-btn prev" onclick="slideCarousel(event, -1)">&#10094;</button>
+                            <button class="nav-btn next" onclick="slideCarousel(event, 1)">&#10095;</button>
+                        `;
                     }
                 } else {
-                    mediaHTML = `<div class="placeholder-img">Image Coming Soon</div>`;
+                    carouselHTML = `<div class="placeholder-img">Image Coming Soon</div>`;
                 }
 
                 const cardHTML = `
                     <div class="product-card">
                         ${badgeHTML}
-                        <div class="image-container" onclick="nextMedia(event, this)">
-                            ${mediaHTML}
-                            ${indicatorsHTML}
-                            ${tapHint}
+                        <div class="image-container">
+                            ${arrowsHTML}
+                            ${carouselHTML}
                         </div>
                         <div class="product-info">
                             <h3 class="product-title">${item.name}</h3>
-                            <div class="product-meta">
-                                <p class="price">${item.price}</p>
-                            </div>
+                            <p class="price">${item.price}</p>
                             <button class="buy-btn">Inquire / Quote</button>
                         </div>
                     </div>
