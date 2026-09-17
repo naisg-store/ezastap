@@ -244,56 +244,55 @@
 
     <script>
         // Cleaned up data arrays pulling multiple images/videos from your spreadsheet
+        // Added the 'active' flag to each item
         const spreadsheetData = [
             { 
                 id: "MNA-VB-ChMLED-01", name: 'Volleyball LED Chain "M" Blue/Light Blue', price: "$115.00", 
-                media: ["M-BLB-LUP-01.mp4", "M-BLB-LUP-03.jpg", "M-BLB-LUP-04.jpg"] 
+                media: ["M-BLB-LUP-02.jpg", "M-BLB-LUP-03.jpg", "M-BLB-LUP-04.jpg"],
+                active: "Yes"
             },
             { 
                 id: "MNA-VB-ChMLED-02", name: 'Volleyball LED Chain "M" Blue/Yellow', price: "$135.00", 
-                media: ["M-BY-LUP-01.jpg", "M-BY-LUP-02.mp4"] 
+                media: ["M-BY-LUP-01.jpg", "M-BY-LUP-01.mp4"],
+                active: "Y" 
             },
             { 
                 id: "MNA-VB-ChMSLR-01", name: 'Volleyball SolarLED Chain "M" Blue/Light Blue', price: "$115.00", 
-                media: ["M-BLB-SLR-01-d.jpg", "M-BLB-SLR-01-l.jpg"] // Removed the duplicate from the sheet
+                media: ["M-BLB-SLR-01-d.jpg", "M-BLB-SLR-01-l.jpg"],
+                active: "yes"
             },
             { 
                 id: "MNA-FTB-ChFCE-01", name: 'Football Chain w/ Mascot Head', price: "$120.00", 
-                media: ["FCE-CHN-01-r.jpg", "FCE-CHN-01-l.jpg"] 
+                media: ["FCE-CHN-01-r.jpg", "FCE-CHN-01-l.jpg"],
+                active: "Yes"
             },
             { 
                 id: "MNA-FTB-ChFCE-02", name: 'Football Chain w/ Mascot Head - Silk', price: "$75.00", 
-                media: ["FCE-CHN-02-r.jpg", "FCE-CHN-02-l.jpg"] 
+                media: ["FCE-CHN-02-r.jpg", "FCE-CHN-02-l.jpg"],
+                active: "No" // This will be hidden
             },
-            { id: "MNA-FTB-ChFCE-03", name: 'Football Chain w/ Mascot Head - alt', price: "$65.00", media: [] },
-            { id: "MNA-FTB-FCE-01", name: 'Mascot Head w/out chain', price: "$40.00", media: [] },
-            { id: "MNA-FTB-M-01", name: 'Marina "M" Logo w/out chain', price: "$35.00", media: [] },
-            { id: "MNA-VB-KYCh-01", name: 'Volleyball Keychain with M logo LB on Blue', price: "$20.00", media: [] }
+            { id: "MNA-FTB-ChFCE-03", name: 'Football Chain w/ Mascot Head - alt', price: "$65.00", media: [], active: "" }, // Hidden
+            { id: "MNA-FTB-FCE-01", name: 'Mascot Head w/out chain', price: "$40.00", media: [], active: "No" }, // Hidden
+            { id: "MNA-FTB-M-01", name: 'Marina "M" Logo w/out chain', price: "$35.00", media: [], active: "Yes" },
+            { id: "MNA-VB-KYCh-01", name: 'Volleyball Keychain with M logo LB on Blue', price: "$20.00", media: [], active: "y" },
+            { id: "MNA-VB-KYCh-02", name: 'Volleyball Keychain with M logo LB on White', price: "$20.00", media: [], active: "Y" }
         ];
 
-        // This function handles the click-to-crossfade logic
         function nextMedia(event, element) {
-            // Find all media items and dots inside the clicked container
             const items = element.querySelectorAll('.carousel-item');
             const dots = element.querySelectorAll('.dot');
-            
-            // If there's only 1 image, don't do anything
             if (items.length <= 1) return;
 
-            // Find currently active item
             let activeIndex = 0;
             items.forEach((item, index) => {
                 if(item.classList.contains('active')) activeIndex = index;
             });
 
-            // Remove active state
             items[activeIndex].classList.remove('active');
             if(dots.length > 0) dots[activeIndex].classList.remove('active');
 
-            // Calculate next item index (loops back to 0 at the end)
             let nextIndex = (activeIndex + 1) % items.length;
 
-            // Apply active state to next item
             items[nextIndex].classList.add('active');
             if(dots.length > 0) dots[nextIndex].classList.add('active');
         }
@@ -301,11 +300,18 @@
         function initGallery() {
             const gallery = document.getElementById('store-gallery');
             
-            spreadsheetData.forEach(item => {
+            // THE NEW FILTER: Only keep items where 'active' starts with 'y' or 'Y'
+            const activeProducts = spreadsheetData.filter(item => {
+                if (!item.active) return false;
+                const flag = item.active.trim().toLowerCase();
+                return flag === 'yes' || flag === 'y';
+            });
+            
+            // Now build the gallery using only the activeProducts
+            activeProducts.forEach(item => {
                 const hasLED = item.name.includes("LED") || item.name.includes("Solar");
-                const badgeHTML = hasLED ? `<div class="badge">LED ILLUMINATED</div>` : '';
+                const badgeHTML = hasLED ? `<div class="badge">⚡ LED ILLUMINATED</div>` : '';
                 
-                // Clean the media array (removes empties and generic 'assets' paths)
                 const validMedia = item.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
                 
                 let mediaHTML = '';
@@ -313,7 +319,6 @@
                 let tapHint = '';
 
                 if (validMedia.length > 0) {
-                    // Generate the media tags (Images or Auto-playing Video)
                     validMedia.forEach((file, index) => {
                         const activeClass = index === 0 ? 'active' : '';
                         const filePath = `assets/${file}`;
@@ -325,7 +330,6 @@
                         }
                     });
 
-                    // Generate dots if there are multiple images
                     if(validMedia.length > 1) {
                         tapHint = `<div class="tap-hint">Tap for more</div>`;
                         indicatorsHTML = `<div class="carousel-indicators">`;
@@ -336,11 +340,9 @@
                         indicatorsHTML += `</div>`;
                     }
                 } else {
-                    // Fallback if no images are loaded
                     mediaHTML = `<div class="placeholder-img">Image Coming Soon</div>`;
                 }
 
-                // Build the final Card
                 const cardHTML = `
                     <div class="product-card">
                         ${badgeHTML}
