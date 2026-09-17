@@ -303,7 +303,7 @@
             
             spreadsheetData.forEach(item => {
                 const hasLED = item.name.includes("LED") || item.name.includes("Solar");
-                const badgeHTML = hasLED ? `<div class="badge">âš¡ LED ILLUMINATED</div>` : '';
+                const badgeHTML = hasLED ? `<div class="badge">LED ILLUMINATED</div>` : '';
                 
                 // Clean the media array (removes empties and generic 'assets' paths)
                 const validMedia = item.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
