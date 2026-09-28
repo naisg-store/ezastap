@@ -278,26 +278,83 @@
 
     <script>
         const spreadsheetData = [
+            const spreadsheetData = [
             { 
-                id: "MNA-VB-ChMLED-01", name: 'Marina High School "M" Logo - lightup Color LED Chain Blue/Light Blue', price: "$95.00", 
-                media: ["M-BLB-LUP-04.jpg", "M-BLB-LUP-03.jpg", "M-BLB-LUP-01.mp4"], active: "y" 
+                id: "EZ-N1-001", name: 'Retro #1 NFC Keychain', price: "$24.99", 
+                media: ["retro-1-nfc-keychain-1.jpg", "retro-1-nfc-keychain-2.jpg", "retro-1-nfc-keychain-3.jpg"], active: "y" 
             },
             { 
-                id: "MNA-VB-ChMLED-02", name:'Marina High School "M" Logo - Lightup Color LED with Chain - Blue/Yellow', price: "$95.00", 
-                media: ["M-BY-LUP-01.jpg", "M-BY-LUP-02.mp4"], active: "y" 
+                id: "EZ-SB-WHEEL-RED", name: 'Service Bucket NFC Keychain', price: "$19.99", 
+                media: ["bucket-service-nfc-keychain-1.jpg", "bucket-service-nfc-keychain-2.jpg"], active: "y" 
             },
             { 
-                id: "MNA-VB-ChMSLR-01", name:'Marina High School "M" Logo - Lightup White LED with Chain - Blue/Light Blue', price: "$75.00", 
-                media: ["M-BLB-SLR-01-d.jpg", "M-BLB-SLR-01-l.jpg"], active: "y" 
+                id: "EZ-SB-VAC-YEL", name: 'Clean Sweep Maid NFC Keychain', price: "$19.99", 
+                media: ["bucket-maid-nfc-keychain.jpg"], active: "y" 
             },
             { 
-                id: "MNA-FTB-ChFCE-01", name: 'Marina Hogh School Logo with Chain', price: "$65.00", 
-                media: ["FCE-CHN-01-r.jpg", "FCE-CHN-01-l.jpg"], active: "y" 
+                id: "EZ-SB-SUDS-BLU", name: 'Turbo Vac Detailing NFC Keychain', price: "$19.99", 
+                media: ["bucket-vaccuum-nfc-keychain.jpg"], active: "y" 
             },
             { 
-                id: "MNA-FTB-M-01", name: 'Marina "M" Logo without chain', price: "$40.00", media: ["BLB-SLR-01.jpg"], active: "y" },
+                id: "EZ-SB-SUDS-YEL", name: 'Suds & Shine Detailing NFC Keychain', price: "$19.99", 
+                media: ["bucket-wheel-nfc-keychain.jpg"], active: "y" 
+            },
             { 
-                id: "MNA-VB-KYCh-01", name: 'Volleyball Keychain with Marina "M" logo', price: "$20.00", media: [], active: "n" }
+                id: "EZ-PIS-001", name: 'High-Octane Piston NFC Keychain', price: "$21.99", 
+                media: ["piston-nfc-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-PB-001", name: 'Fresh Coat Paint Bucket NFC Keychain', price: "$19.99", 
+                media: ["paint-bucket-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-LI-001", name: 'The Executive Connect LinkedIn NFC Keychain', price: "$19.99", 
+                media: ["linked-in-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-IG-001", name: 'The Social Magnet Instagram NFC Keychain', price: "$19.99", 
+                media: ["instagram-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-PLM-001", name: 'The Flow Master Plumber NFC Keychain', price: "$19.99", 
+                media: ["plumber-droplet-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-BAR-001", name: 'Fresh Cut Barber NFC Keychain', price: "$19.99", 
+                media: ["barber-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-ENG-001", name: 'Trouble Code Check Engine NFC Keychain', price: "$19.99", 
+                media: ["check-engine-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-VB-001", name: 'Volleyball NFC Keychain', price: "$19.99", 
+                media: ["volleybaill-nfc-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-LAK-001", name: 'Royal Ice LA Kings NFC Keychain', price: "$19.99", 
+                media: ["la-kings-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-LAK-2012", name: '2012 Champions LA Kings NFC Keychain', price: "$19.99", 
+                media: ["la-kings-2012-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-LAK-CHEVY", name: 'LA Kings Chevy logo NFC Keychain', price: "$19.99", 
+                media: ["la-kings-logo-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-LAR-2025", name: 'Rams House 2025 Edition NFC Keychain', price: "$19.99", 
+                media: ["la-rams-2025-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-LAR-LOGO", name: 'Signature LA Rams Logo NFC Keychain', price: "$19.99", 
+                media: ["la-rams-logo-keychain.jpg"], active: "y" 
+            },
+            { 
+                id: "EZ-LAR-HEAD", name: 'Horned Pride LA Rams Head NFC Keychain', price: "$19.99", 
+                media: ["la-rams-head-keychain.jpg"], active: "y" 
+            }
         ];
 
         let activeProducts = [];
