@@ -387,7 +387,7 @@
                         if(file.endsWith('.mp4')) {
                             carouselHTML += `<video src="${filePath}" class="carousel-item" autoplay loop muted playsinline ${clickAction}></video>`;
                         } else {
-                            carouselHTML += `<img src="${filePath}" class="carousel-item" onerror="this.src='placeholder.jpg'" ${clickAction}>`;
+                            carouselHTML += `<img src="${filePath}" class="carousel-item" onerror="this.onerror=null; this.src='placeholder.jpg';" ${clickAction}>`;
                         }
                     });
                     carouselHTML += `</div>`;
