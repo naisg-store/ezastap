@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Custom NFC Enhanced Keychains | EZ as Tap</title>
+    <style>
+        /* Core Theme Variables */
+        :root {
+            --bg-dark: #0a0f1d;
+            --card-bg: rgba(19, 27, 46, 0.92);
+            --panel-bg: #18233c;
+            --accent-blue: #00a2ff;
+            --accent-cyan: #00d2ff;
+            --text-light: #ecf0f1;
+            --text-muted: #8a99ad;
+            --border-color: #1e2d4a;
+            --price-color: #4dc0b5;
+            --accent-glow: rgba(0, 162, 255, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* STICKY COLLAPSIBLE HEADER */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 29, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-link img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .brand-link span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-list {
+            display: flex;
+            gap: 1.25rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--accent-cyan);
+            background: rgba(0, 162, 255, 0.12);
+            border: 1px solid rgba(0, 210, 255, 0.25);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger-bar {
+            width: 24px;
+            height: 2px;
+            background-color: var(--text-light);
+            border-radius: 2px;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(10, 15, 29, 0.98);
+                border-bottom: 1px solid var(--border-color);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .nav-menu.open {
+                max-height: 260px;
+            }
+
+            .nav-list {
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 10px 14px;
+            }
+
+            .nav-toggle.active .hamburger-bar:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .nav-toggle.active .hamburger-bar:nth-child(2) {
+                opacity: 0;
+            }
+            .nav-toggle.active .hamburger-bar:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+        }
+
+        /* HERO & PARALLAX VIDEO CONTAINER */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .parallax-video-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .parallax-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.35;
+            will-change: transform;
+            transition: transform 0.05s linear;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(10, 15, 29, 0.5) 0%, rgba(10, 15, 29, 0.88) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .logo-wrapper {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            width: 220px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+            mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+            filter: drop-shadow(0 0 15px rgba(0, 162, 255, 0.3));
+        }
+
+        .hero-text {
+            text-align: left;
+            flex: 1;
+        }
+
+        h1 {
+            color: var(--accent-blue);
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.3;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+            opacity: 0.95;
+        }
+
+        @media (max-width: 650px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 30px 15px;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .logo {
+                width: 170px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* CONTAINER & GALLERY */
+        .container {
+            max-width: 1300px;
+            margin: 20px auto 50px auto;
+            padding: 0 20px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 0 10px var(--accent-glow);
+        }
+
+        .image-container {
+            width: 100%;
+            height: 280px;
+            position: relative;
+            background-color: #111;
+        }
+
+        .image-carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            width: 100%;
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+        
+        .image-carousel::-webkit-scrollbar { display: none; }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: bottom; 
+            scroll-snap-align: start;
+            cursor: zoom-in;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: 1px solid var(--border-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            backdrop-filter: blur(2px);
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
+        .nav-btn.prev { left: 8px; }
+        .nav-btn.next { right: 8px; }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background-color: rgba(0,0,0,0.8);
+            color: var(--price-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            border: 1px solid var(--price-color);
+            z-index: 4;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+        }
+
+        .placeholder-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #222 10px, #222 20px);
+            color: #555;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { margin: 0 0 10px 0; font-size: 1.15em; line-height: 1.3; flex-grow: 1; color: var(--text-light); }
+        .price { color: var(--price-color); font-size: 1.5em; font-weight: 700; margin: 0 0 20px 0; }
+        
+        .buy-btn {
+            background-color: transparent;
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-blue);
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+        .product-card:hover .buy-btn { background-color: var(--accent-blue); color: #fff; }
+
+        /* LIGHTBOX STYLES */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 15, 0.98);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox-content {
+            position: relative;
+            width: 90vw;
+            max-width: 1000px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: row;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .lb-media-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+            position: relative;
+            min-height: 300px;
+        }
+
+        #lb-media-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #lb-media-inner img, #lb-media-inner video {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+        }
+
+        .lb-details-section {
+            width: 400px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: var(--card-bg);
+        }
+
+        .lb-details-section h2 { margin-top: 0; font-size: 1.5em; line-height: 1.3; color: var(--text-light); }
+        .lb-details-section #lb-price { color: var(--price-color); font-size: 1.8em; font-weight: bold; margin-bottom: 20px; }
+        .lb-details-section #lb-desc { color: var(--text-muted); line-height: 1.5; font-size: 0.95em; flex-grow: 1; }
+        .lb-details-section ul { padding-left: 20px; }
+        .lb-details-section li { margin-bottom: 8px; }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            padding: 20px;
+            user-select: none;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+        .lb-nav:hover { color: var(--accent-cyan); }
+        .lb-prev { left: 15px; }
+        .lb-next { right: 15px; }
+
+        .lb-counter {
+            position: absolute;
+            bottom: 15px;
+            color: var(--text-muted);
+            font-family: monospace;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+        }
+
+        .lb-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: color 0.2s;
+            z-index: 10001;
+        }
+        .lb-close:hover { color: var(--accent-cyan); }
+
+        @media (max-width: 768px) {
+            .lightbox-content { flex-direction: column; overflow-y: auto; }
+            .lb-media-section { min-height: 40vh; }
+            .lb-details-section { width: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STICKY SITE HEADER WITH COLLAPSIBLE MENU -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <img src="EZ-logo-color.png" alt="EZ as Tap">
+                EZ as <span>Tap</span>
+            </a>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <nav class="nav-menu" id="navMenu">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Price Calculator</a></li>
+                    <li><a href="nfc-catalog.html" class="nav-link active">Custom NFC Keychains</a></li>
+                    <li><a href="spirit-gallery.html" class="nav-link">School Spirit Gear</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO HEADER WITH PARALLAX VIDEO BACKGROUND & FADED LOGO -->
+    <div class="hero-section">
+        <div class="parallax-video-wrapper">
+            <video class="parallax-video" id="heroVideo" autoplay loop muted playsinline>
+                <source src="nfc-keychain-hero.mp4" type="video/mp4">
+                Your browser does not support video background.
+            </video>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="logo-wrapper">
+                <img src="EZ-logo-color.png" alt="EZ as Tap Logo" class="logo">
+            </div>
+            <div class="hero-text">
+                <h1>Custom NFC Keychains</h1>
+                <p class="subtitle">Premium 3D Printed Hardware &amp; Instant Digital Handshakes</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="store-gallery" class="gallery-grid">
+            <!-- JavaScript injects products here -->
+        </div>
+    </div>
+
+    <!-- The Full-Screen Lightbox Container -->
+    <div id="lightbox" class="lightbox">
+        <div class="lb-close" onclick="closeLightbox()">&#215;</div>
+        
+        <div class="lightbox-content">
+            <div id="lb-media-container" class="lb-media-section">
+                <div class="lb-nav lb-prev" onclick="navigateLightbox(-1)">&#10094;</div>
+                <div id="lb-media-inner"></div>
+                <div class="lb-nav lb-next" onclick="navigateLightbox(1)">&#10095;</div>
+                <div class="lb-counter" id="lb-counter">1 / 1</div>
+            </div>
+            
+            <div class="lb-details-section">
+                <h2 id="lb-title"></h2>
+                <div id="lb-price"></div>
+                <div id="lb-desc"></div>
+                <button class="buy-btn" style="margin-top:20px;" onclick="window.location.href='index.html'">Inquire / Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MOBILE NAV TOGGLE
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                const isOpen = navMenu.classList.toggle('open');
+                navToggle.classList.toggle('active', isOpen);
+                navToggle.setAttribute('aria-expanded', isOpen);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                    navMenu.classList.remove('open');
+                    navToggle.classList.remove('active');
+                    navToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // PARALLAX EFFECT FOR HERO VIDEO
+        window.addEventListener('scroll', function() {
+            const video = document.getElementById('heroVideo');
+            if (video) {
+                let scrolled = window.scrollY;
+                video.style.transform = 'translateY(' + (scrolled * 0.35) + 'px)';
+            }
+        });
+
+        const spreadsheetData = [
+            { 
+                id: "EZ-HW-001", 
+                name: 'Jack-o\'-Lantern Halloween NFC Keychain', 
+                price: "$19.99", 
+                media: [
+                    "halloween-jack-1.jpg", 
+                    "halloween-jack-2.jpg", 
+                    "halloween-jack-3.jpg", 
+                    "halloween-jack-4.jpg", 
+                    "halloween-jack-5.jpg"
+                ], 
+                active: "y",
+                description: '<p><b>Your description here.</b></p>'
+            },
+            { 
+                id: "EZ-SB-VAC-YEL", name: 'Clean Sweep Maid NFC Keychain', price: "$19.99", 
+                media: ["bucket-maid-nfc-keychain.png", "bucket-maid-nfc-keychain-2.png"], active: "y",
+                description: '<p><b>The Instant Booking Magnet: Designed for Residential & Commercial Cleaners.</b></p><p>Turn sparkling clean homes into repeat clients and rave reviews before you leave. The <b>EZ Tap Clean Sweep Maid</b> turns every satisfied customer into an instant 5-star review or rebooking.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Digital Handshake:</b> Share your direct booking link, phone, and contact card in a single tap.</li><li><b>Google Review Magnet:</b> Send clients straight to your Google Business review page to capture 5-star feedback on the spot.</li><li><b>Tap-to-Pay:</b> Collect service payments instantly via CashApp, Venmo, or PayPal.</li><li><b>Instant Wi-Fi Access:</b> Tap to connect your cleaning staff or clients to Wi-Fi seamlessly.</li><li><b>Universal Compatibility:</b> Works on all modern iPhones and Androids with zero apps required.</li></ul><p><b>The Pro Strategy:</b><br>Attach it to your supply caddy or apron. When the walkthrough is finished and clients are thrilled, have them tap to review or book their next clean.</p>'
+            },  
+            { 
+                id: "EZ-SB-SUDS-BLU", name: 'Turbo Vac Detailing NFC Keychain', price: "$19.99", 
+                media: ["bucket-vaccuum-nfc-keychain.png"], active: "y",
+                description: '<p><b>The Detailer\'s Digital Secret Weapon: Turbocharge Your Auto Care Business.</b></p><p>Leave paper cards in the dust. The <b>EZ Tap Turbo Vac Detailing</b> keychain empowers mobile detailers and auto spas to capture repeat business and instant reviews right at the curb.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Digital Handshake:</b> Tap to transfer your complete contact info, pricing menu, and service catalog.</li><li><b>Google Review Magnet:</b> Lock in 5-star Google reviews while customers are admiring their immaculate interior.</li><li><b>Instant Social & Portfolio:</b> Direct clients straight to your Instagram or TikTok before-and-after reels.</li><li><b>Cashless Pay:</b> Accept tips and invoice balances instantly through Venmo, CashApp, or Zelle.</li><li><b>Universal Compatibility:</b> Seamlessly connects with iOS and Android devices—no extra app needed.</li></ul><p><b>The Pro Strategy:</b><br>Keep it on your detailing cart. When presenting the finished vehicle, tap their phone to seal the 5-star review and secure their next appointment.</p>'
+            },  
+            { 
+                id: "EZ-SB-SUDS-YEL", name: 'Suds & Shine Detailing NFC Keychain', price: "$19.99", 
+                media: ["bucket-wheel-nfc-keychain.png"], active: "y",
+                description: '<p><b>The High-Gloss Advantage: Turn Every Wash into 5-Star Reviews.</b></p><p>Make word-of-mouth effortless. The <b>EZ Tap Suds & Shine Detailing</b> keychain turns showroom shine into immediate revenue, repeat bookings, and verified Google reviews.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Google Review Magnet:</b> Prompt customers to leave 5-star Google reviews right when their car looks flawless.</li><li><b>Instant Digital Handshake:</b> Instantly share your digital business card and direct online booking calendar.</li><li><b>Guest Wi-Fi Connect:</b> Let waiting lobby customers tap to join your shop Wi-Fi network instantly.</li><li><b>Instant Cashless Checkout:</b> Get paid or tipped effortlessly via CashApp, Venmo, or PayPal.</li><li><b>Universal Compatibility:</b> Instant tap response on all modern smartphones without downloading an app.</li></ul><p><b>The Pro Strategy:</b><br>Hand it over during final vehicle inspection. One tap connects their phone to your review page or portfolio while satisfaction is at its peak.</p>'
+            },
+            { 
+                id: "EZ-PB-001", name: 'Fresh Coat Paint Bucket NFC Keychain', price: "$19.99", 
+                media: ["paint-bucket-keychain.jpg"], active: "y",
+                description: '<p><b>The Painter\'s Closer: Turn Fresh Coats into Fast Reviews.</b></p><p>Leave a lasting impression long after the paint dries. The <b>EZ Tap Fresh Coat Paint Bucket</b> empowers painting contractors to turn satisfied homeowners into glowing online reviews and repeat referrals in seconds.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Google Review Magnet:</b> Direct clients straight to your Google Business profile to secure instant 5-star reviews on project completion.</li><li><b>Instant Digital Handshake:</b> Share your complete contact card, licensing credentials, and estimation request form in one tap.</li><li><b>Portfolio Showcase:</b> Instantly launch your Instagram or website photo gallery showcasing crisp lines and finished rooms.</li><li><b>Instant Cashless Pay:</b> Collect deposits or final balances effortlessly through Venmo, CashApp, or Zelle.</li><li><b>Universal Compatibility:</b> Instantly connects with all modern smartphones without downloading an app.</li></ul><p><b>The Pro Strategy:</b><br>Attach it to your work keys. At the final walkthrough, tap the client\'s phone to collect the final payment and a verified 5-star review simultaneously.</p>'
+            },
+            { 
+                id: "EZ-PIS-001", name: 'High-Octane Piston NFC Keychain', price: "$21.99", 
+                media: ["piston-nfc-keychain.jpg", "piston-nfc-keychain-2.jpg", "piston-nfc-keychain-3.jpg"], active: "y",
+                description: '<p><b>The High-Octane Handshake: Built for the Automotive World.</b></p><p>Show your passion for the craft while you scale your shop. The <b>EZ Tap Piston</b> is the digital tool for mechanics, tuners, and builders who need to prove their work instantly.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Digital Handshake:</b> Share your Contact Card (vCard) with phone, email, and socials in one tap.</li><li><b>Google Review Magnet:</b> Link directly to your Google Business profile.</li><li><b>Social Power:</b> Drive traffic to your Instagram or TikTok to show off builds.</li><li><b>Instant Pay:</b> Get paid on the spot via CashApp, Venmo, or PayPal.</li><li><b>Universal Compatibility:</b> Works with all modern iPhones and Androids.</li></ul><p><b>The Automotive Edge:</b><br>Link it directly to your portfolio to show off your latest builds. Rugged, industrial, and resin-sealed to survive the shop floor.</p>'
+            },
+            { 
+                id: "EZ-ENG-001", name: 'Trouble Code Check Engine NFC Keychain', price: "$19.99", 
+                media: ["check-engine-keychain.jpg"], active: "y",
+                description: '<p><b>The Auto Pro\'s Digital Dispatch: Fast Diagnostics, Fast Reviews.</b></p><p>Turn check engine panic into lifelong customer loyalty. The <b>EZ Tap Trouble Code Check Engine</b> keychain connects drivers directly to your automotive repair shop, diagnostic booking, and roadside assistance.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Guest Wi-Fi Access:</b> Program your customer waiting lounge Wi-Fi so drivers tap to join without asking for passwords.</li><li><b>Google Review Magnet:</b> Collect immediate 5-star reviews on the service drive right when the customer picks up their keys.</li><li><b>Instant Service Booking:</b> Link straight to your shop\'s online appointment scheduler or diagnostic booking portal.</li><li><b>Digital Handshake:</b> Provide customers with your shop contact info, towing hotline, and emergency numbers in one tap.</li><li><b>Universal Compatibility:</b> Seamlessly connects with all modern iPhones and Android smartphones.</li></ul><p><b>The Pro Strategy:</b><br>Attach it to customer key sets upon vehicle delivery or display it at your front counter for effortless guest Wi-Fi and 5-star review capture.</p>'
+            },
+            { 
+                id: "EZ-PLM-001", name: 'The Flow Master Plumber NFC Keychain', price: "$19.99", 
+                media: ["plumber-droplet-keychain.jpg"], active: "y",
+                description: '<p><b>The 24/7 Dispatch Shortcut: Emergency Plumbing at Their Fingertips.</b></p><p>When pipes burst, customers call whoever is easiest to find. <b>The Flow Master Plumber</b> keychain puts your emergency dispatch number, direct booking link, and review page right into your customer\'s pocket.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Emergency Contact:</b> Save your company phone number, emergency dispatch line, and email directly to customer contacts.</li><li><b>Google Review Magnet:</b> Lock in authentic 5-star Google reviews right after solving a plumbing emergency.</li><li><b>Guest Wi-Fi Setup:</b> Easily programmed for your shop or service desk so visiting customers tap to join Wi-Fi instantly.</li><li><b>Tap-to-Pay:</b> Collect service payments and tips immediately on site via CashApp, Venmo, or PayPal.</li><li><b>Universal Compatibility:</b> Compatible with all modern iOS and Android smartphones without extra software.</li></ul><p><b>The Pro Strategy:</b><br>Leave it near the water heater or present it at the end of a service call. Customers can tap anytime for emergency service or to drop a 5-star review.</p>'
+            },
+            { 
+                id: "EZ-BAR-001", name: 'Fresh Cut Barber NFC Keychain', price: "$19.99", 
+                media: ["barber-keychain.jpg"], active: "y",
+                description: '<p><b>The Chair-to-Booking Magnet: Fill Your Calendar and Collect Tips.</b></p><p>Take your barbering business to the next level. The <b>EZ Tap Fresh Cut Barber</b> keychain turns every fresh fade into an instant rebooking, a 5-star Google review, and hassle-free cashless tips.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Booking Link:</b> Send clients directly to your Booksy, Squire, or custom booking schedule in one tap.</li><li><b>Cashless Tip & Pay:</b> Let clients tap to send tips and payment instantly via CashApp, Venmo, or Zelle.</li><li><b>Instagram Portfolio:</b> Showcase your cuts, lineups, and styling portfolio directly on the client\'s screen.</li><li><b>Shop Wi-Fi Tap:</b> Let clients waiting in the lobby tap to instantly connect to your shop\'s guest Wi-Fi network.</li><li><b>Universal Compatibility:</b> Works natively on all modern smartphones with zero setup or apps required.</li></ul><p><b>The Pro Strategy:</b><br>Place it on your station or clip it to your clipper lanyard. When handing clients the mirror, have them tap to send your tip and book their next cut before walking out.</p>'
+            },    
+            { 
+                id: "EZ-LI-001", name: 'The Executive Connect LinkedIn NFC Keychain', price: "$19.99", 
+                media: ["linked-in-keychain.jpg"], active: "y",
+                description: '<p><b>The Modern Networking Power Move: Connect on LinkedIn in Seconds.</b></p><p>Never lose a high-value connection to a lost paper card. <b>The Executive Connect LinkedIn</b> keychain gives entrepreneurs, executives, and professionals the fastest way to expand their professional network with zero friction.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant LinkedIn Connection:</b> Launch your LinkedIn profile directly on anyone\'s screen with a single tap for immediate connection requests.</li><li><b>Digital Handshake (vCard):</b> Save your full corporate contact info, phone, email, and company website straight to their contacts.</li><li><b>Pitch Deck & Portfolio:</b> Direct prospects and investors straight to your executive bio, pitch deck, or calendar link.</li><li><b>Guest Wi-Fi Sharing:</b> Program it to connect meeting guests and clients to conference room Wi-Fi in an instant.</li><li><b>Universal Compatibility:</b> Works natively across all modern iPhones and Android devices with no external app required.</li></ul><p><b>The Pro Strategy:</b><br>Keep it on your everyday carry or lanyard. At conferences, networking mixers, and client meetings, tap once to lock in high-impact professional contacts.</p>'
+            },
+            { 
+                id: "EZ-N1-001", name: 'Retro #1 NFC Keychain', price: "$24.99", 
+                media: ["retro-1-nfc-keychain-1.jpg", "retro-1-nfc-keychain-2.jpg", "retro-1-nfc-keychain-3.jpg"], active: "y",
+                description: '<p><b>The Authority Tag: Your Digital Handshake, Upgraded.</b></p><p>Stop fumbling with paper cards that get lost or thrown away. The <b>EZ Tap Retro #1</b> turns every introduction into a high-tech power move.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Digital Handshake:</b> Share your Contact Card (vCard) with phone, email, and socials in one tap.</li><li><b>Google Review Magnet:</b> Link directly to your Google Business profile to rack up 5-star reviews instantly.</li><li><b>Social Power:</b> Drive traffic to your Instagram, TikTok, or Facebook portfolio.</li><li><b>Instant Pay:</b> Get paid on the spot via CashApp, Venmo, or PayPal.</li><li><b>Universal Compatibility:</b> Works with all modern iPhones and Androids. No app required.</li></ul><p><b>Why Professionals Love It:</b><br>It\'s a built-in icebreaker. The classic \'Number 1\' design signals your status, while the tech proves you are ahead of the curve.</p>'
+            },      
+            { 
+                id: "EZ-IG-001", name: 'The Social Magnet Instagram NFC Keychain', price: "$19.99", 
+                media: ["instagram-keychain.jpg"], active: "y",
+                description: '<p><b>The Follower Accelerator: Turn Real-World Encounters into Followers.</b></p><p>Stop telling people your username and hoping they spell it right. <b>The Social Magnet Instagram</b> keychain instantly directs anyone who taps directly to your profile, link-in-bio, or online storefront.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Profile Launch:</b> Open your Instagram page instantly on their phone so they can hit \'Follow\' on the spot.</li><li><b>Linktree & Bio Hub:</b> Send followers directly to your multi-link landing page, YouTube channel, or merch store.</li><li><b>Instant Digital Handshake:</b> Share your booking details, media kit, and direct messaging links seamlessly.</li><li><b>Tap-to-Pay:</b> Collect tips, donations, or direct sales via CashApp, Venmo, or PayPal instantly.</li><li><b>Universal Compatibility:</b> Works effortlessly with all modern Apple and Android devices—no app needed.</li></ul><p><b>The Pro Strategy:</b><br>Clip it to your phone bag or keys at pop-ups, events, and meetups. One tap turns casual chats into engaged followers and paying customers.</p>'
+            },
+            { 
+                id: "EZ-VB-001", name: 'Volleyball NFC Keychain', price: "$19.99", 
+                media: ["volleyball-nfc-keychain.jpg"], active: "y",
+                description: '<p><b>The Team Connect: Roster, Schedule, and Socials in One Tap.</b></p><p>Serve up seamless team communication on and off the court. The <b>EZ Tap Volleyball</b> keychain connects players, parents, and fans instantly to tournament schedules, team rosters, and payment links.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Schedule & Roster:</b> Tap to open tournament brackets, practice schedules, and live game updates instantly.</li><li><b>Digital Contact Sharing:</b> Instantly share coaching contacts, emergency info, or player recruitment profiles.</li><li><b>Team Dues & Concession Pay:</b> Collect tournament fees, gear payments, and booster donations via Venmo or CashApp.</li><li><b>Social Media & Highlights:</b> Direct scouts and fans straight to your team YouTube, TikTok, or Instagram highlight reels.</li><li><b>Universal Compatibility:</b> Works instantly across all modern iOS and Android mobile devices without an app.</li></ul><p><b>The Pro Strategy:</b><br>Attach it to your gear bag. At tournaments and team meetings, teammates and scouts can tap to grab contact info, video links, or brackets in seconds.</p>'
+            },
+            { 
+                id: "EZ-LAK-2012", name: '2012 Champions LA Kings NFC Keychain', price: "$19.99", 
+                media: ["la-kings-2012-keychain.jpg"], active: "y",
+                description: '<p><b>Championship Heritage Meets Smart Tech: Tap into Historic Glory.</b></p><p>Celebrate legendary championship pride with instant digital utility. The <b>EZ Tap 2012 Champions LA Kings</b> keychain is designed for collectors and superfans who want high-tech convenience on their everyday carry.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Video Highlights:</b> Program it to launch iconic 2012 cup-winning highlights and historic franchise moments in one tap.</li><li><b>Digital Business Card:</b> Share your personal or business contact card, social profiles, and website effortlessly.</li><li><b>Home & Bar Wi-Fi Tap:</b> Program your game room or sports lounge Wi-Fi so guests tap to join with zero password typing.</li><li><b>Cashless Peer Payments:</b> Collect fantasy league dues or split watch party tabs in seconds with Venmo or PayPal.</li><li><b>Universal Compatibility:</b> Instant tap response on all modern smartphones—no special apps required.</li></ul><p><b>The Pro Strategy:</b><br>Use it as your everyday conversation starter. Tap to show off memorable team clips, share your contact info, or grant instant Wi-Fi access at watch parties.</p>'
+            },
+            { 
+                id: "EZ-LAK-CHEVY", name: 'LA Kings Chevy logo NFC Keychain', price: "$19.99", 
+                media: ["la-kings-logo-keychain.jpg"], active: "y",
+                description: '<p><b>Retro Hockey Energy: Vintage Style Powered by Modern Tap Tech.</b></p><p>Bring iconic 90s hockey culture into the smart era. The <b>EZ Tap LA Kings Chevy Logo</b> keychain combines classic throwback aesthetics with powerful one-tap digital connection.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Digital Handshake:</b> Transfer your vCard, phone number, and social links with a single tap to any smartphone.</li><li><b>Direct Link Sharing:</b> Direct friends and clients to your custom link tree, portfolio, or online storefront instantly.</li><li><b>One-Tap Guest Wi-Fi:</b> Set it up for your fan cave, garage, or office so visitors connect to Wi-Fi instantly.</li><li><b>Instant Cashless Pay:</b> Accept and send peer-to-peer payments on the spot via CashApp, Venmo, or Apple Cash.</li><li><b>Universal Compatibility:</b> Works straight out of the box with modern Apple and Android smartphones.</li></ul><p><b>The Pro Strategy:</b><br>Carry it on your keys or jacket zipper. Perfect for networking at arenas, bars, and gatherings—tap to exchange info in a split second.</p>'
+            },
+            { 
+                id: "EZ-LAR-2025", name: 'Rams House 2025 Edition NFC Keychain', price: "$19.99", 
+                media: ["la-rams-2025-keychain.jpg"], active: "y",
+                description: '<p><b>The Tailgate Tech Essential: Rams House Edition Built for Game Day.</b></p><p>Bring championship-caliber convenience to every tailgate and game day meetup. The <b>EZ Tap Rams House 2025 Edition</b> keychain connects fans and crews instantly to tailgate spots, social groups, and split payments.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Game Day Coordinates & Maps:</b> Link straight to your tailgate parking pin, stadium guide, or group meetup chat.</li><li><b>Instant Peer Pay:</b> Split tailgate supplies, parking passes, and tickets effortlessly via Venmo, CashApp, or Zelle.</li><li><b>Digital Handshake:</b> Share your phone, email, and social profiles with fellow fans and business connections in one tap.</li><li><b>One-Tap Wi-Fi Sharing:</b> Program it to connect guests to your RV, mobile hotspot, or home game room Wi-Fi network.</li><li><b>Universal Compatibility:</b> Built-in compatibility with all modern iOS and Android smartphones without extra software.</li></ul><p><b>The Pro Strategy:</b><br>Take it to the stadium or sports bar. Tap with your tailgate crew to share live locations, exchange socials, or settle expenses instantly.</p>'
+            },
+            { 
+                id: "EZ-LAR-LOGO", name: 'Signature LA Rams Logo NFC Keychain', price: "$19.99", 
+                media: ["la-rams-logo-keychain.jpg"], active: "y",
+                description: '<p><b>The Modern Fan Handshake: Bold Team Pride with One-Tap Utility.</b></p><p>Upgrade your keychain to a digital multi-tool. The <b>EZ Tap Signature LA Rams Logo</b> keychain lets diehard fans and business pros network and connect with instantaneous tap technology.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Digital Contact:</b> Share your vCard, socials, and business information instantly without fumbling for paper cards.</li><li><b>Direct Link to Website/Store:</b> Direct clients and followers straight to your website, booking portal, or merchandise page.</li><li><b>One-Tap Hotspot & Wi-Fi:</b> Allow friends and visitors to tap to connect to your tailgate hotspot or home Wi-Fi instantly.</li><li><b>Fast Cashless Transactions:</b> Send and receive money on the fly via CashApp, Venmo, or PayPal.</li><li><b>Universal Compatibility:</b> Natively connects with modern Apple and Android devices—zero app installation required.</li></ul><p><b>The Pro Strategy:</b><br>Keep it on your car keys or lanyard. Turn every spontaneous meetup into a verified connection, payment, or shared link in one tap.</p>'
+            },
+            { 
+                id: "EZ-LAR-HEAD", name: 'Horned Pride LA Rams Head NFC Keychain', price: "$19.99", 
+                media: ["la-rams-head-keychain.jpg"], active: "y",
+                description: '<p><b>The Ultimate Game Day Power Tag: Horned Pride Meets Smart NFC.</b></p><p>Showcase undeniable franchise pride while keeping cutting-edge smart connectivity in your pocket. The <b>EZ Tap Horned Pride LA Rams Head</b> keychain turns any meetup into an instant digital interaction.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Digital Handshake:</b> Pass your full contact information, portfolio, and socials to any phone in a fraction of a second.</li><li><b>Google Review Magnet:</b> Program it for your business so customers can tap to leave 5-star Google reviews on the spot.</li><li><b>Tailgate & Lounge Wi-Fi Tap:</b> Let friends and patrons tap to join your Wi-Fi network instantly without typing passwords.</li><li><b>Instant Tap-to-Pay:</b> Collect fantasy dues, ticket reimbursements, and client payments instantly via CashApp or Venmo.</li><li><b>Universal Compatibility:</b> Functions seamlessly with all modern smartphones with no additional app required.</li></ul><p><b>The Pro Strategy:</b><br>Carry it daily to stand out. Whether exchanging contact info at a game or collecting a client review, tap to make it happen instantly.</p>'
+            },
+            { 
+                id: "EZ-LAK-001", name: 'Royal Ice LA Kings NFC Keychain', price: "$19.99", 
+                media: ["la-kings-keychain.jpg"], active: "n",
+                description: '<p><b>The Fanatic\'s Digital Pass: Game Schedules, Fan Hub & Tap-to-Share.</b></p><p>Rep your loyalty on and off the ice with smart tech built for hockey faithful. The <b>EZ Tap Royal Ice LA Kings</b> keychain connects fellow fans instantly to game schedules, watch party locations, and community chats.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Fan Hub & Game Day Info:</b> Link directly to live score updates, broadcast channels, and upcoming matchup schedules.</li><li><b>Digital Social Handshake:</b> Share your social handles, tailgating spot, or fan club contact card in a single tap.</li><li><b>Guest Wi-Fi Setup:</b> Ideal for sports bars, man caves, and watch parties—tap to connect guests to Wi-Fi instantly.</li><li><b>Cashless Tailgate Split:</b> Settle game tickets, food runs, and merchandise splits instantly via CashApp or Venmo.</li><li><b>Universal Compatibility:</b> Native one-tap functionality across all modern iPhones and Android phones.</li></ul><p><b>The Pro Strategy:</b><br>Keep it on your keys during game nights. Tap with fellow fans to share watch party info, split tickets, or join fan group chats instantly.</p>'
+            },
+            { 
+                id: "EZ-SB-WHEEL-RED", name: 'Service Bucket NFC Keychain', price: "$19.99", 
+                media: ["bucket-service-nfc-keychain-1.jpg", "bucket-service-nfc-keychain-2.jpg"], active: "n",
+                description: '<p><b>The Review Magnet: The Service Industry\'s Secret Weapon.</b></p><p>Turn every \'Job Well Done\' into a 5-star Google review before you even leave the driveway. The <b>EZ Tap Service Bucket</b> is designed for the pros who work hard—detailers, cleaners, and tradespeople.</p><h3><b>The EZ Tap Core Capabilities:</b></h3><ul><li><b>Instant Digital Handshake:</b> Share your Contact Card (vCard) with phone, email, and socials in one tap.</li><li><b>Google Review Magnet:</b> Link directly to your Google Business profile.</li><li><b>Social Power:</b> Drive traffic to your Instagram or TikTok portfolio.</li><li><b>Instant Pay:</b> Get paid on the spot via CashApp, Venmo, or PayPal.</li><li><b>Universal Compatibility:</b> Works with all modern iPhones and Androids.</li></ul><p><b>The Pro Strategy:</b><br>Hang it on your gear bag or keys. When the customer is smiling at the finished result, have them tap the bucket. Get the review and the payment on the spot.</p>'
+            },    
+        ];
+
+        let activeProducts = [];
+
+        function slideCarousel(event, direction) {
+            event.stopPropagation();
+            const container = event.target.closest('.image-container').querySelector('.image-carousel');
+            const scrollAmount = container.offsetWidth;
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+
+        let lbMediaArray = [];
+        let lbCurrentIndex = 0;
+        let currentProduct = null;
+
+        function openLightbox(productId, clickedIndex) {
+            currentProduct = activeProducts.find(p => p.id === productId);
+            if(!currentProduct) return;
+            
+            lbMediaArray = currentProduct.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
+            if(lbMediaArray.length === 0) return;
+
+            lbCurrentIndex = clickedIndex;
+            updateLightboxView();
+            
+            document.getElementById('lb-title').innerText = currentProduct.name;
+            document.getElementById('lb-price').innerText = currentProduct.price;
+            document.getElementById('lb-desc').innerHTML = currentProduct.description || "No description available.";
+
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.getElementById('lb-media-inner').innerHTML = '';
+        }
+
+        function navigateLightbox(direction) {
+            lbCurrentIndex += direction;
+            if(lbCurrentIndex < 0) lbCurrentIndex = lbMediaArray.length - 1;
+            if(lbCurrentIndex >= lbMediaArray.length) lbCurrentIndex = 0;
+            updateLightboxView();
+        }
+
+        function updateLightboxView() {
+            const container = document.getElementById('lb-media-inner');
+            const file = lbMediaArray[lbCurrentIndex];
+            const filePath = `assets/${file}`;
+            
+            if(file.endsWith('.mp4')) {
+                container.innerHTML = `<video src="${filePath}" controls autoplay playsinline></video>`;
+            } else {
+                container.innerHTML = `<img src="${filePath}">`;
+            }
+            
+            document.getElementById('lb-counter').innerText = `${lbCurrentIndex + 1} / ${lbMediaArray.length}`;
+            
+            const arrows = document.querySelectorAll('.lb-nav');
+            arrows.forEach(arrow => arrow.style.display = lbMediaArray.length > 1 ? 'block' : 'none');
+        }
+        
+        function initGallery() {
+            const gallery = document.getElementById('store-gallery');
+            
+            activeProducts = spreadsheetData.filter(item => {
+                if (!item.active) return false;
+                return item.active.trim().toLowerCase() === 'y' || item.active.trim().toLowerCase() === 'yes';
+            });
+            
+            activeProducts.forEach(item => {
+                const hasLED = item.name.includes("LED") || item.name.includes("Solar");
+                const badgeHTML = hasLED ? `<div class="badge">⚡ LED</div>` : '';
+                
+                const validMedia = item.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
+                
+                let carouselHTML = '';
+                let arrowsHTML = '';
+
+                if (validMedia.length > 0) {
+                    carouselHTML = `<div class="image-carousel">`;
+                    validMedia.forEach((file, index) => {
+                        const filePath = `assets/${file}`;
+                        const clickAction = `onclick="openLightbox('${item.id}', ${index})"`;
+                        
+                        if(file.endsWith('.mp4')) {
+                            carouselHTML += `<video src="${filePath}" class="carousel-item" autoplay loop muted playsinline ${clickAction}></video>`;
+                        } else {
+                            carouselHTML += `<img src="${filePath}" class="carousel-item" onerror="this.onerror=null; this.src='placeholder.jpg';" ${clickAction}>`;
+                        }
+                    });
+                    carouselHTML += `</div>`;
+
+                    if(validMedia.length > 1) {
+                        arrowsHTML = `
+                            <button class="nav-btn prev" onclick="slideCarousel(event, -1)">&#10094;</button>
+                            <button class="nav-btn next" onclick="slideCarousel(event, 1)">&#10095;</button>
+                        `;
+                    }
+                } else {
+                    carouselHTML = `<div class="placeholder-img">Image Coming Soon</div>`;
+                }
+
+                const cardHTML = `
+                    <div class="product-card">
+                        ${badgeHTML}
+                        <div class="image-container">
+                            ${arrowsHTML}
+                            ${carouselHTML}
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">${item.name}</h3>
+                            <p class="price">${item.price}</p>
+                            <button class="buy-btn" onclick="openLightbox('${item.id}', 0)">View Details</button>
+                        </div>
+                    </div>
+                `;
+                
+                gallery.innerHTML += cardHTML;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initGallery);
+    </script>
+</body>
+</html>
