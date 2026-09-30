@@ -1,6 +1,656 @@
-// SPIRIT GEAR PRODUCTS - REWRITTEN NAMES & DESCRIPTIONS
-// ids, prices, media and active flags are unchanged from your original.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>School Spirit Custom Gear | EZ as Tap</title>
+    <style>
+        /* Core Theme Variables */
+        :root {
+            --bg-dark: #0a0f1d;
+            --card-bg: rgba(19, 27, 46, 0.92);
+            --panel-bg: #18233c;
+            --accent-blue: #00a2ff;
+            --accent-cyan: #00d2ff;
+            --text-light: #ecf0f1;
+            --text-muted: #8a99ad;
+            --border-color: #1e2d4a;
+            --price-color: #4dc0b5;
+            --accent-glow: rgba(0, 162, 255, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* STICKY COLLAPSIBLE HEADER */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 29, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-link img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .brand-link span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-list {
+            display: flex;
+            gap: 1.25rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--accent-cyan);
+            background: rgba(0, 162, 255, 0.12);
+            border: 1px solid rgba(0, 210, 255, 0.25);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger-bar {
+            width: 24px;
+            height: 2px;
+            background-color: var(--text-light);
+            border-radius: 2px;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(10, 15, 29, 0.98);
+                border-bottom: 1px solid var(--border-color);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .nav-menu.open {
+                max-height: 260px;
+            }
+
+            .nav-list {
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 10px 14px;
+            }
+
+            .nav-toggle.active .hamburger-bar:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .nav-toggle.active .hamburger-bar:nth-child(2) {
+                opacity: 0;
+            }
+            .nav-toggle.active .hamburger-bar:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+        }
+
+        /* HERO & PARALLAX VIDEO CONTAINER */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .parallax-video-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .parallax-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.35;
+            will-change: transform;
+            transition: transform 0.05s linear;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(10, 15, 29, 0.5) 0%, rgba(10, 15, 29, 0.88) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .logo-wrapper {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            width: 220px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+            mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+            filter: drop-shadow(0 0 15px rgba(0, 162, 255, 0.3));
+        }
+
+        .hero-text {
+            text-align: left;
+            flex: 1;
+        }
+
+        h1 {
+            color: var(--accent-blue);
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.3;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+            opacity: 0.95;
+        }
+
+        @media (max-width: 650px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 30px 15px;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .logo {
+                width: 170px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* CONTAINER & GALLERY */
+        .container {
+            max-width: 1300px;
+            margin: 20px auto 50px auto;
+            padding: 0 20px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 0 10px var(--accent-glow);
+        }
+
+        .image-container {
+            width: 100%;
+            height: 280px;
+            position: relative;
+            background-color: #111;
+        }
+
+        .image-carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            width: 100%;
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+        
+        .image-carousel::-webkit-scrollbar { display: none; }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: bottom; 
+            scroll-snap-align: start;
+            cursor: zoom-in;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: 1px solid var(--border-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            backdrop-filter: blur(2px);
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
+        .nav-btn.prev { left: 8px; }
+        .nav-btn.next { right: 8px; }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background-color: rgba(0,0,0,0.8);
+            color: var(--price-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            border: 1px solid var(--price-color);
+            z-index: 4;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+        }
+
+        .placeholder-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #222 10px, #222 20px);
+            color: #555;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { margin: 0 0 10px 0; font-size: 1.15em; line-height: 1.3; flex-grow: 1; color: var(--text-light); }
+        .price { color: var(--price-color); font-size: 1.5em; font-weight: 700; margin: 0 0 20px 0; }
+        
+        .buy-btn {
+            background-color: transparent;
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-blue);
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+        .product-card:hover .buy-btn { background-color: var(--accent-blue); color: #fff; }
+
+        /* SPLIT-VIEW LIGHTBOX STYLES (MATCHING NFC-CATALOG) */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 15, 0.98);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox-content {
+            position: relative;
+            width: 90vw;
+            max-width: 1000px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: row;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .lb-media-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+            position: relative;
+            min-height: 300px;
+        }
+
+        #lb-media-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #lb-media-inner img, #lb-media-inner video {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+        }
+
+        .lb-details-section {
+            width: 400px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: var(--card-bg);
+        }
+
+        .lb-details-section h2 { margin-top: 0; font-size: 1.5em; line-height: 1.3; color: var(--text-light); }
+        .lb-details-section #lb-price { color: var(--price-color); font-size: 1.8em; font-weight: bold; margin-bottom: 20px; }
+        .lb-details-section #lb-desc { color: var(--text-muted); line-height: 1.5; font-size: 0.95em; flex-grow: 1; }
+        .lb-details-section ul { padding-left: 20px; }
+        .lb-details-section li { margin-bottom: 8px; }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            padding: 20px;
+            user-select: none;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+        .lb-nav:hover { color: var(--accent-cyan); }
+        .lb-prev { left: 15px; }
+        .lb-next { right: 15px; }
+
+        .lb-counter {
+            position: absolute;
+            bottom: 15px;
+            color: var(--text-muted);
+            font-family: monospace;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+        }
+
+        .lb-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: color 0.2s;
+            z-index: 10001;
+        }
+        .lb-close:hover { color: var(--accent-cyan); }
+
+        @media (max-width: 768px) {
+            .lightbox-content { flex-direction: column; overflow-y: auto; }
+            .lb-media-section { min-height: 40vh; }
+            .lb-details-section { width: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STICKY SITE HEADER WITH COLLAPSIBLE MENU -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <img src="EZ-logo-color.png" alt="EZ as Tap">
+                EZ as <span>Tap</span>
+            </a>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <nav class="nav-menu" id="navMenu">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Price Calculator</a></li>
+                    <li><a href="nfc-catalog.html" class="nav-link">Custom NFC Keychains</a></li>
+                    <li><a href="spirit-gallery.html" class="nav-link active">School Spirit Gear</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO HEADER WITH PARALLAX VIDEO BACKGROUND & FADED LOGO -->
+    <div class="hero-section">
+        <div class="parallax-video-wrapper">
+            <video class="parallax-video" id="heroVideo" autoplay loop muted playsinline>
+                <source src="nfc-keychain-hero.mp4" type="video/mp4">
+                Your browser does not support video background.
+            </video>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="logo-wrapper">
+                <img src="EZ-logo-color.png" alt="EZ as Tap Logo" class="logo">
+            </div>
+            <div class="hero-text">
+                <h1>Custom Spirit Gear</h1>
+                <p class="subtitle">Custom LED Pendants, Fan Chains &amp; 3D Printed Accessories</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="store-gallery" class="gallery-grid">
+            <!-- JavaScript injects products here -->
+        </div>
+    </div>
+
+    <!-- The Full-Screen Lightbox Container (Split Media & Details View) -->
+    <div id="lightbox" class="lightbox">
+        <div class="lb-close" onclick="closeLightbox()">&#215;</div>
+        
+        <div class="lightbox-content">
+            <div id="lb-media-container" class="lb-media-section">
+                <div class="lb-nav lb-prev" onclick="navigateLightbox(-1)">&#10094;</div>
+                <div id="lb-media-inner"></div>
+                <div class="lb-nav lb-next" onclick="navigateLightbox(1)">&#10095;</div>
+                <div class="lb-counter" id="lb-counter">1 / 1</div>
+            </div>
+            
+            <div class="lb-details-section">
+                <h2 id="lb-title"></h2>
+                <div id="lb-price"></div>
+                <div id="lb-desc"></div>
+                <button class="buy-btn" style="margin-top:20px;" onclick="window.location.href='index.html'">Inquire / Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MOBILE NAV TOGGLE
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                const isOpen = navMenu.classList.toggle('open');
+                navToggle.classList.toggle('active', isOpen);
+                navToggle.setAttribute('aria-expanded', isOpen);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                    navMenu.classList.remove('open');
+                    navToggle.classList.remove('active');
+                    navToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // PARALLAX EFFECT FOR HERO VIDEO
+        window.addEventListener('scroll', function() {
+            const video = document.getElementById('heroVideo');
+            if (video) {
+                let scrolled = window.scrollY;
+                video.style.transform = 'translateY(' + (scrolled * 0.35) + 'px)';
+            }
+        });
+
+        // SPIRIT GEAR PRODUCTS - ALL 16 (IDs aligned to the Build Calculator tab)
+// Existing 9 keep their copy, prices and media from the last version.
+// New entries use the sheet's retail price, and "active" is "n" until you flip it to "y".
 const spreadsheetData = [
+    // ---------- LED TURNOVER CHAINS ----------
     {
         id: "MNA-LED-CHN-01",
         name: 'The Marina "M" Glow Chain - Bluetooth LED Turnover Chain (Blue & Light Blue)',
@@ -17,14 +667,34 @@ const spreadsheetData = [
         active: "y",
         description: `<p><b>Bigger. Brighter. Blue and gold, the way it should be.</b></p><p>Same glow-up energy, now in XL. This oversized "M" packs a dense LED strip behind deep blue and yellow, so the colors really pop under gym lights. Watch the videos to see how it cuts through a dark gym walkout.</p><h3><b>What You Get:</b></h3><ul><li><b>Big, Bold Color:</b> High-density LEDs give rich, saturated blue and yellow with a sharp glowing outline.</li><li><b>Rechargeable Battery:</b> A 5,000 mAh power bank keeps it going from the tailgate to the postgame hangout.</li><li><b>Big Gold Chain:</b> Sturdy links that are comfortable enough to wear all night.</li><li><b>Heavy-Duty Build:</b> Over 250g of reinforced polymer, made in a 7-hour print. Yes, really.</li></ul><p><b>Where It Shines:</b><br>Student section leaders, booster squads, and any family that wants to be seen at the rivalry game.</p>`
     },
+
+    // ---------- SOLAR LED TURNOVER CHAINS ----------
     {
         id: "MNA-SLR-CHN-01",
-        name: 'The All-Day Glow Chain - Solar + Battery LED Turnover Chain (Marina "M")',
+        name: 'The All-Day Glow Chain - Solar + Battery LED Turnover Chain (Blue & Light Blue)',
         price: "$115.00",
         media: ["M-BLB-SLR-01-d.jpg", "M-BLB-SLR-01-l.jpg"],
         active: "y",
         description: `<p><b>For the families who spend the whole Saturday at the tournament.</b></p><p>Long day, no outlets, still glowing. This one soaks up sunshine while you're out at the courts and pairs it with a big 10,000 mAh battery for the night games. Check the photos to see how it looks in daylight and after dark.</p><h3><b>What You Get:</b></h3><ul><li><b>Solar + Battery Power:</b> Recharges in the sun and backs it up with a 10,000 mAh power bank, double our standard size.</li><li><b>Day and Night Looks:</b> Clean matte finish by day, glowing silhouette when the lights go down.</li><li><b>Light on the Neck:</b> Oversized gold links, but lightweight enough for a long day.</li></ul><p><b>Where It Shines:</b><br>Beach volleyball, weekend club tournaments, outdoor tailgates, and any event where the closest outlet is a parking lot away.</p>`
     },
+    {
+        id: "MNA-SLR-CHN-02",
+        name: 'The All-Day Glow Chain - Solar LED Turnover Chain (Blue & Yellow)',
+        price: "$115.00",
+        media: [],
+        active: "n",
+        description: `<p><b>Blue and gold, powered by the sun.</b></p><p>Same all-day glow, now in Marina's classic blue and yellow. This big 3D-printed "M" is built for the long stretches between the parking lot, the bleachers, and the postgame pizza. Leave it in the sun, and it lights up when the sun goes down.</p><h3><b>What You Get:</b></h3><ul><li><b>Solar-Powered Glow:</b> Soaks up daylight during the game and lights up after dark, with no cords or outlets needed.</li><li><b>Blue and Yellow Colors:</b> Classic team colors that are easy to spot from across the field.</li><li><b>Big Gold Chain:</b> Oversized links that look great over a jersey or hoodie.</li><li><b>Sturdy Build:</b> About 250g of 3D-printed polymer, made to be worn at the game, not kept in a box.</li></ul><p><b>Where It Shines:</b><br>Outdoor tournaments, tailgates, and beach days when your battery is at 2% and the glow keeps going.</p>`
+    },
+    {
+        id: "MNA-SLR-CHN-03",
+        name: 'The All-Day Glow Chain - Solar LED Turnover Chain (Yellow & Blue)',
+        price: "$115.00",
+        media: ["M-BY-SLR-09.jpg", "M-BY-SLR-10.jpg"],
+        active: "n",
+        description: `<p><b>Gold takes the lead.</b></p><p>Flip the colors and this "M" goes bright yellow up front with blue accents behind it. It's a bolder, sunnier look, and it glows after the sun goes down. Check out the photos to see the difference.</p><h3><b>What You Get:</b></h3><ul><li><b>Yellow-First Color Scheme:</b> A brighter, sunnier twist on the classic blue and gold.</li><li><b>Solar-Powered Glow:</b> Soaks up daylight during the game and lights up after dark, with no cords or outlets needed.</li><li><b>Big Gold Chain:</b> Oversized links with plenty of sideline swagger.</li><li><b>Sturdy Build:</b> About 250g of 3D-printed polymer made for game-day use.</li></ul><p><b>Where It Shines:</b><br>Day games, night games, and any family that wants to stand out from a sea of blue.</p>`
+    },
+
+    // ---------- VIKING MASCOT CHAINS & MEDALLIONS ----------
     {
         id: "MNA-MSCT-CHN-01",
         name: 'The Viking Turnover Chain - Marina Mascot Edition',
@@ -34,7 +704,7 @@ const spreadsheetData = [
         description: `<p><b>Every Viking on the sideline deserves a turnover chain.</b></p><p>College football swagger, Friday night edition. A sculpted 3D Viking head with horns and a braided beard hangs from a big gold chain. It's got real dimension, and the profile photos show off the details.</p><h3><b>What You Get:</b></h3><ul><li><b>Detailed 3D Viking:</b> About 200g of horns, braided beard, and team colors.</li><li><b>Big Gold Chain:</b> Oversized links for maximum sideline swagger.</li><li><b>No Batteries, No Fuss:</b> Nothing to charge, so it's always ready to go.</li><li><b>Tough Polymer:</b> 3D printed and made to handle game-day action.</li></ul><p><b>Where It Shines:</b><br>Hand it out for every takeaway, fumble recovery, and sack, or wear it in the stands at homecoming.</p>`
     },
     {
-        id: "MNA-MSCT-CHN-01-02",
+        id: "MNA-MSCT-CHN-02",
         name: 'The Viking Turnover Chain - Silk Edition (Marina Mascot)',
         price: "$65.00",
         media: ["FCE-CHN-02-r.jpg", "FCE-CHN-02-l.jpg"],
@@ -43,27 +713,71 @@ const spreadsheetData = [
     },
     {
         id: "MNA-MSCT-NOCh-01",
+        name: 'Viking Medallion - Marina Mascot (Chain Not Included)',
+        price: "$40.00",
+        media: [],
+        active: "n",
+        description: `<p><b>All the Viking, none of the chain.</b></p><p>Already have a chain, or just want a fierce little guy for the shelf? This is the sculpted Marina Viking from our turnover chain, sold on its own. Horns, braided beard, and team colors all included.</p><h3><b>What You Get:</b></h3><ul><li><b>Detailed 3D Viking:</b> About 150g of horns, braided beard, and crisp team colors.</li><li><b>Fits Most Chains:</b> Pairs easily with store-bought and online hype chains.</li><li><b>Flat Back:</b> Sits flush on a shelf, wall, or jersey.</li><li><b>Checked by Hand:</b> Printed, assembled, and inspected for a clean finish.</li></ul><p><b>Where It Shines:</b><br>Trophy cases, a desk at home or work, or your own custom chain.</p>`
+    },
+    {
+        id: "MNA-MSCT-NOCh-02",
         name: 'Silk Viking Medallion - Marina Mascot (Chain Not Included)',
         price: "$50.00",
         media: ["FCE-CHN-02-r.jpg", "FCE-CHN-02-l.jpg"],
         active: "y",
         description: `<p><b>All the Viking, none of the chain.</b></p><p>Already have a chain, or just want something shiny for the shelf? This is the same silk-finish Viking as our chain edition, sold on its own. The photos show how nicely it catches the light.</p><h3><b>What You Get:</b></h3><ul><li><b>Silk-Gloss Finish:</b> Satiny sheen that looks great on display or on a chain.</li><li><b>Fits Most Chains:</b> Pairs easily with store-bought and online hype chains.</li><li><b>Flat Back:</b> Sits flush on a shelf, wall, or jersey.</li><li><b>Checked by Hand:</b> Printed, assembled, and inspected for a clean finish.</li></ul><p><b>Where It Shines:</b><br>Trophy cases, a desk at home or work, or your own custom chain.</p>`
     },
+
+    // ---------- "M" LOGO PIECES ----------
     {
         id: "MNA-M-BY-CHN-01",
-        name: 'Marina "M" Spirit Plaque - Display Piece (No Chain)',
+        name: 'Marina "M" Spirit Chain - Blue & Yellow',
+        price: "$40.00",
+        media: [],
+        active: "n",
+        description: `<p><b>Big "M" energy, ready to wear.</b></p><p>Want the look of a turnover chain without the lights or the big price tag? This bold, layered 3D Marina "M" in blue and yellow comes on a gold chain, ready to throw on and head to the game.</p><h3><b>What You Get:</b></h3><ul><li><b>Layered 3D "M":</b> About 150g of blue and yellow for a crisp, dimensional look.</li><li><b>Gold Chain Included:</b> Just put it on and go.</li><li><b>No Batteries, No Charging:</b> Nothing to remember before you head out the door.</li><li><b>Team Colors:</b> Classic Marina blue and yellow.</li></ul><p><b>Where It Shines:</b><br>Game days, spirit weeks, pep rallies, and grandparents who want to show some pride.</p>`
+    },
+    {
+        id: "MNA-M-BLB-CHN-02",
+        name: 'Marina "M" Spirit Chain - Blue & Light Blue',
+        price: "$40.00",
+        media: [],
+        active: "n",
+        description: `<p><b>Cool blues, big pride.</b></p><p>Same layered 3D Marina "M," now in Marina Blue and Light Blue. It comes on a gold chain, so it's ready to wear straight out of the box.</p><h3><b>What You Get:</b></h3><ul><li><b>Layered 3D "M":</b> About 150g of blue and light blue for a crisp, dimensional look.</li><li><b>Gold Chain Included:</b> Just put it on and go.</li><li><b>No Batteries, No Charging:</b> Nothing to remember before you head out the door.</li><li><b>Team Colors:</b> Marina blue with a light blue pop.</li></ul><p><b>Where It Shines:</b><br>Game days, spirit weeks, pep rallies, and matching with the whole family in the stands.</p>`
+    },
+    {
+        id: "MNA-M-BY-NOCh-01",
+        name: 'Marina "M" Spirit Plaque - Blue & Yellow (No Chain)',
         price: "$40.00",
         media: ["BLB-SLR-01.jpg"],
         active: "y",
         description: `<p><b>Big "M" energy for your desk, shelf, or locker.</b></p><p>Love the look of the chain but want something that stays put? This standalone Marina "M" is a solid, layered 3D piece in team colors. It looks good just about anywhere you can prop it up.</p><h3><b>What You Get:</b></h3><ul><li><b>Solid Build:</b> About 150g of layered blue and highlight color for a crisp, dimensional look.</li><li><b>Display It Your Way:</b> Stand it on a shelf, mount it on a wall, or wave it around as a rally sign.</li><li><b>Easy to Pack:</b> Fits in a gym bag or backpack, with no tangled chain.</li><li><b>Mod-Friendly:</b> Clean mounting points on the back if you want to add a cord or adhesive strip.</li></ul><p><b>Where It Shines:</b><br>Classrooms, coach's desks, team banquet awards, and the home fan cave.</p>`
     },
     {
+        id: "MNA-M-BLB-NOCh-02",
+        name: 'Marina "M" Spirit Plaque - Blue & Light Blue (No Chain)',
+        price: "$40.00",
+        media: ["M-BLB-MED-NoCh-01.jpg", "M-BLB-MED-NoCh-02.jpg"],
+        active: "n",
+        description: `<p><b>The cool-blue "M" for your desk, shelf, or locker.</b></p><p>Same solid, layered 3D Marina "M," in Marina Blue and Light Blue. It's a sharp-looking piece that goes anywhere you have a flat spot and some team pride to show.</p><h3><b>What You Get:</b></h3><ul><li><b>Solid Build:</b> About 150g of layered blue and light blue for a crisp, dimensional look.</li><li><b>Display It Your Way:</b> Stand it on a shelf, mount it on a wall, or wave it around as a rally sign.</li><li><b>Easy to Pack:</b> Fits in a gym bag or backpack, with no tangled chain.</li><li><b>Mod-Friendly:</b> Clean mounting points on the back if you want to add a cord or adhesive strip.</li></ul><p><b>Where It Shines:</b><br>Classrooms, coach's desks, team banquet awards, and the home fan cave.</p>`
+    },
+
+    // ---------- KEYCHAINS ----------
+    {
         id: "MNA-VB-KYCh-01",
-        name: 'Volleyball Bag Tag Keychain - Marina "M" Edition',
+        name: 'Volleyball Bag Tag Keychain - Marina "M" (Light Blue on Blue)',
         price: "$20.00",
         media: [],
         active: "n",
         description: `<p><b>Small tag. Big team pride.</b></p><p>Clip it on the volleyball bag, the backpack, or the car keys. This tough little two-color 3D "M" is easy to spot in a pile of identical gear bags at a tournament.</p><h3><b>What You Get:</b></h3><ul><li><b>Strong Hardware:</b> A heavy-duty split ring and swivel clasp that holds up to real bag life.</li><li><b>Color All the Way Through:</b> No paint to scratch or peel.</li><li><b>Lightweight:</b> Adds no bulk to a bag or key ring.</li></ul><p><b>Where It Shines:</b><br>Team gifts, end-of-season goodies, and tournament fundraisers.</p>`
+    },
+    {
+        id: "MNA-VB-KYCh-02",
+        name: 'Volleyball Bag Tag Keychain - Marina "M" (Light Blue on White)',
+        price: "$20.00",
+        media: [],
+        active: "n",
+        description: `<p><b>Clean, bright, and impossible to lose.</b></p><p>A crisp light blue "M" on a white base makes this tag pop on a dark gear bag. Clip it on the volleyball bag, the backpack, or the car keys, and you'll spot it every time.</p><h3><b>What You Get:</b></h3><ul><li><b>Strong Hardware:</b> A heavy-duty split ring and swivel clasp that holds up to real bag life.</li><li><b>Color All the Way Through:</b> No paint to scratch or peel.</li><li><b>Lightweight:</b> Adds no bulk to a bag or key ring.</li></ul><p><b>Where It Shines:</b><br>Team gifts, end-of-season goodies, and tournament fundraisers. Grab one in each color and mix them up.</p>`
     },
     {
         id: "MNA-FTB-KYCh-01",
@@ -74,3 +788,130 @@ const spreadsheetData = [
         description: `<p><b>Their number, on your keys.</b></p><p>The Marina Viking crest goes on the front, and your player's jersey number goes on the back. It's a small keepsake that means a lot to the family.</p><h3><b>What You Get:</b></h3><ul><li><b>Personalized Number:</b> Made with your athlete's jersey digits on the back.</li><li><b>Tough Multi-Color Polymer:</b> Holds up in pockets, lockers, and gear bags.</li><li><b>Swivel Clasp Included:</b> Clips on to keys, duffels, and equipment bags in a second.</li></ul><p><b>Where It Shines:</b><br>Senior night, team parent gifts, and keepsakes for players and grandparents.</p>`
     }
 ];
+
+        let activeProducts = [];
+
+        function slideCarousel(event, direction) {
+            event.stopPropagation();
+            const container = event.target.closest('.image-container').querySelector('.image-carousel');
+            const scrollAmount = container.offsetWidth;
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+
+        // ---- LIGHTBOX LOGIC ----
+        let lbMediaArray = [];
+        let lbCurrentIndex = 0;
+        let currentProduct = null;
+
+        function openLightbox(productId, clickedIndex) {
+            currentProduct = activeProducts.find(p => p.id === productId);
+            if(!currentProduct) return;
+            
+            lbMediaArray = currentProduct.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
+            if(lbMediaArray.length === 0) return;
+
+            lbCurrentIndex = clickedIndex;
+            updateLightboxView();
+            
+            // Populate the split details section
+            document.getElementById('lb-title').innerText = currentProduct.name;
+            document.getElementById('lb-price').innerText = currentProduct.price;
+            document.getElementById('lb-desc').innerHTML = currentProduct.description || "No description available.";
+
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.getElementById('lb-media-inner').innerHTML = '';
+        }
+
+        function navigateLightbox(direction) {
+            lbCurrentIndex += direction;
+            if(lbCurrentIndex < 0) lbCurrentIndex = lbMediaArray.length - 1;
+            if(lbCurrentIndex >= lbMediaArray.length) lbCurrentIndex = 0;
+            updateLightboxView();
+        }
+
+        function updateLightboxView() {
+            const container = document.getElementById('lb-media-inner');
+            const file = lbMediaArray[lbCurrentIndex];
+            const filePath = `assets/${file}`;
+            
+            if(file.endsWith('.mp4')) {
+                container.innerHTML = `<video src="${filePath}" controls autoplay playsinline></video>`;
+            } else {
+                container.innerHTML = `<img src="${filePath}">`;
+            }
+            
+            document.getElementById('lb-counter').innerText = `${lbCurrentIndex + 1} / ${lbMediaArray.length}`;
+            
+            const arrows = document.querySelectorAll('.lb-nav');
+            arrows.forEach(arrow => arrow.style.display = lbMediaArray.length > 1 ? 'block' : 'none');
+        }
+
+        // ---- BUILD THE GALLERY GRID ----
+        function initGallery() {
+            const gallery = document.getElementById('store-gallery');
+            
+            activeProducts = spreadsheetData.filter(item => {
+                if (!item.active) return false;
+                return item.active.trim().toLowerCase() === 'y' || item.active.trim().toLowerCase() === 'yes';
+            });
+            
+            activeProducts.forEach(item => {
+                const hasLED = item.name.includes("LED") || item.name.includes("Solar") || item.name.includes("Illuminated");
+                const badgeHTML = hasLED ? `<div class="badge">⚡ LED</div>` : '';
+                
+                const validMedia = item.media.filter(m => m && !m.includes('assets\\') && m !== "assets");
+                
+                let carouselHTML = '';
+                let arrowsHTML = '';
+
+                if (validMedia.length > 0) {
+                    carouselHTML = `<div class="image-carousel">`;
+                    validMedia.forEach((file, index) => {
+                        const filePath = `assets/${file}`;
+                        const clickAction = `onclick="openLightbox('${item.id}', ${index})"`;
+                        
+                        if(file.endsWith('.mp4')) {
+                            carouselHTML += `<video src="${filePath}" class="carousel-item" autoplay loop muted playsinline ${clickAction}></video>`;
+                        } else {
+                            carouselHTML += `<img src="${filePath}" class="carousel-item" onerror="this.onerror=null; this.src='placeholder.jpg';" ${clickAction}>`;
+                        }
+                    });
+                    carouselHTML += `</div>`;
+
+                    if(validMedia.length > 1) {
+                        arrowsHTML = `
+                            <button class="nav-btn prev" onclick="slideCarousel(event, -1)">&#10094;</button>
+                            <button class="nav-btn next" onclick="slideCarousel(event, 1)">&#10095;</button>
+                        `;
+                    }
+                } else {
+                    carouselHTML = `<div class="placeholder-img">Image Coming Soon</div>`;
+                }
+
+                const cardHTML = `
+                    <div class="product-card">
+                        ${badgeHTML}
+                        <div class="image-container">
+                            ${arrowsHTML}
+                            ${carouselHTML}
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">${item.name}</h3>
+                            <p class="price">${item.price}</p>
+                            <button class="buy-btn" onclick="openLightbox('${item.id}', 0)">View Details</button>
+                        </div>
+                    </div>
+                `;
+                
+                gallery.innerHTML += cardHTML;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initGallery);
+    </script>
+</body>
+</html>
