@@ -137,9 +137,9 @@
             margin: 0 auto;
         }
 
-        /* STORY ARTICLE WRAPPER */
+        /* STORY CONTAINER */
         .story-container {
-            max-width: 900px;
+            max-width: 960px;
             margin: 40px auto 80px auto;
             padding: 0 20px;
         }
@@ -176,7 +176,7 @@
         /* IMAGE SHOWCASE GRIDS */
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 20px;
             margin: 25px 0;
         }
@@ -192,7 +192,7 @@
 
         .photo-card img {
             width: 100%;
-            height: 240px;
+            height: 250px;
             object-fit: cover;
             object-position: center;
             display: block;
@@ -219,8 +219,8 @@
         .build-notes {
             background: rgba(0, 162, 255, 0.05);
             border-left: 4px solid var(--accent-blue);
-            padding: 15px 20px;
-            margin: 20px 0;
+            padding: 18px 22px;
+            margin: 24px 0;
             border-radius: 0 8px 8px 0;
         }
 
@@ -230,10 +230,26 @@
         }
 
         .build-notes li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        /* CTA FOOTER */
+        /* HUMBLE MAKER CALLOUT */
+        .craft-note {
+            background: linear-gradient(135deg, rgba(24, 35, 60, 0.6), rgba(10, 15, 29, 0.8));
+            border: 1px dashed var(--accent-blue);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin: 25px 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .craft-note strong {
+            color: var(--text-light);
+        }
+
+        /* FOOTER CTA */
         .story-footer {
             text-align: center;
             margin-top: 50px;
@@ -290,79 +306,107 @@
     <div class="story-hero">
         <span class="badge-tag">Behind The Build</span>
         <h1>From Bleacher Parents to Glowing Sideline Chains</h1>
-        <p>How missing t-shirts, high school sports, and late-night 3D printing led to the ultimate game-day turnover gear.</p>
+        <p>How missing t-shirts, high school sports, and late-night 3D printing led to our game-day turnover gear.</p>
     </div>
 
     <div class="story-container">
 
-        <!-- WHY SECTION -->
+        <!-- BLEACHER DILEMMA -->
         <article class="story-section">
             <h2>The Bleacher Dilemma</h2>
             <p>
-                Like many busy parents running between work and tournaments, I have two kids competing in high school sports. We're in the stands for every play, set, and rally. But there was always one recurring problem: whenever team shirts entered the house, my kids "borrowed" them immediately. On game night, I routinely found myself heading out the door in an old faded hat and generic team colors with zero logos.
+                Like many busy parents running between work, practices, and weekend tournaments, I have two kids competing in high school sports. We're in the stands for every play, set, and rally. But there was always one recurring problem: whenever team shirts made their way into the house, my kids "borrowed" them immediately. On game night, I routinely found myself heading out the door in an old faded hat and generic team colors with zero logos.
             </p>
             <p>
-                Having spent years engineering custom 3D prints and precision NFC gear, I decided to fix that for myself two seasons ago by designing a custom Marina Viking keychain. I spent hours obsessing over the multi-layer color swaps and dialling in the fine edges of our mascot crest. Before long, that pocket piece grew into my first full-sized turnover chain.
+                Having spent years engineering 3D designs and precision gear, I decided to fix that for myself two seasons ago by building a custom Marina Viking keychain. I invested hours obsessing over the multi-layer color transitions and perfecting the mascot crest. Before long, that pocket piece grew into my first full-sized turnover chain.
             </p>
             <p>
-                Fast-forward to this season: my daughter stepped onto the volleyball court, and I realized each squad has their own signature school identity. The volleyball program rallied behind Marina’s canon alternate logo—the iconic <b>"M" with the Star</b>. Back to the CAD drawing board I went to build a dedicated alternate turnover medallion to match their exact team colors.
+                Fast-forward to this season: my daughter stepped onto the volleyball court, and I quickly learned each squad can carry their own school identity. The volleyball program rallied behind Marina’s canon alternate logo—the iconic <b>"M" with the Star</b>. Back to the CAD drawing board I went to build a dedicated alternate turnover medallion to match their exact team colors.
             </p>
         </article>
 
         <!-- THE ILLUMINATION EXPEDITION -->
         <article class="story-section">
-            <h2>Let There Be Light: The Bluetooth & Solar Experiments</h2>
+            <h2>The Lightbulb Moment: Bluetooth vs. All-Day Solar</h2>
             <p>
-                Things officially stepped up a notch when I started tinkering with internal illumination. I pulled out a 100+ LED, Bluetooth-controlled light strip and built a large-format housing powered by an external USB battery pack. It connected directly to a smartphone to cycle through synchronized color chases, strobe sequences, and crowd-hype pulses. When that first lit up in a dim gym walkout, you could see heads turning right across the bleachers.
+                Things took off when I started tinkering with internal illumination. I pulled out an intense 100+ LED, Bluetooth-controlled light strip and built a housing powered by an external USB power bank. Connected to a smartphone, it cycled through synchronized color chases, strobe sequences, and crowd-hype pulses. When that first lit up in a dim gym walkout, you could see heads turning right across the bleachers.
             </p>
             <p>
-                At the same time, I wanted an option designed specifically for long tournament days where hunting for wall outlets is impossible. That inspired our solar-charged array—soaking up the California sun through every outdoor set and powering clean, automatic light the second dusk sets in.
+                At the same time, I wanted an option designed specifically for long tournament days where hunting for wall outlets is out of the question. That inspired our solar-charged array—soaking up the sunshine through every outdoor match and automatically powering clean, ambient light the second dusk sets in.
             </p>
         </article>
 
-        <!-- ITERATIONS V1 vs V2 vs V3 -->
+        <!-- HARDWARE EVOLUTION & PROTOTYPE GALLERY -->
         <article class="story-section">
-            <h2>The Evolution: Frames, Locking Tabs & Wire Routing</h2>
+            <h2>The Evolution: Frames, Screw Tabs & Wire Routing</h2>
             <p>
-                Getting these medallions clean, balanced, and rattle-free took genuine trial, error, and plenty of plastic. You can trace the engineering right across the revisions:
+                Getting these medallions clean, balanced, and rattle-free took genuine trial, error, and plenty of plastic. Early on, it was all about testing structural rigidity before refining the aesthetics.
             </p>
 
+            <!-- V1 vs Early Assembly -->
             <div class="photo-grid">
                 <div class="photo-card">
-                    <img src="assets/Frame-v1.jpg" alt="V1 Frame">
-                    <div class="photo-caption"><b>Version 1 Shell:</b> Fastened with visible screws, loose inner LED run, and basic cavity space.</div>
+                    <img src="assets/Frame-v1.jpg" alt="V1 Frame Prototype">
+                    <div class="photo-caption"><b>Version 1 Shell:</b> The earliest frame attempt, fastening the plates together with hardware screws.</div>
                 </div>
                 <div class="photo-card">
-                    <img src="assets/Frame-v2.jpg" alt="V2 Frame">
-                    <div class="photo-caption"><b>Version 2 Frame:</b> Engineered battery retention cage, perforated alignment bars, and integrated wire channels.</div>
+                    <img src="assets/M-BY-LED-NoCh-07.jpg" alt="Early Clamping Test">
+                    <div class="photo-caption"><b>Early Mechanical Fitting:</b> Working out early shell alignment and clamping points.</div>
                 </div>
             </div>
 
             <div class="build-notes">
                 <ul>
-                    <li><b>Version 1 (The Screwed-Together Prototype):</b> In the earliest build, the front and back plates were held together with hardware screws. The LEDs and wiring were distributed loosely inside the open void, leaving the glow uneven and the battery shifting around.</li>
-                    <li><b>Version 2 (The Dedicated Housing):</b> V2 brought major internal structural upgrades. I engineered a dedicated central cage to hold the battery securely and added perforated guide bars along the perimeter. This let each LED bead route through precise points to project uniform, diffused backlight across the front face.</li>
+                    <li><b>Version 1 (The Screwed-Together Prototype):</b> In the earliest build, the front and back plates were held together with hardware screws. The LEDs and wiring were distributed loosely inside the open void, leaving the glow uneven and the battery shifting around inside.</li>
+                    <li><b>Version 2 (The Dedicated Housing):</b> V2 brought major internal structural upgrades. I engineered a dedicated central cage to hold the power bank securely and added perforated guide bars along the perimeter. This let each LED strand route through precise points to project uniform, diffused backlight across the front face.</li>
                     <li><b>Version 3 (The Precision Interlock):</b> As the designs became more compact, early snap tabs proved too finicky to align on multi-layer prints. Rather than fighting fragile clips, V3 moved to a heavy-duty continuous wrap-around locking perimeter—hugging the front and rear shells together firmly so it can withstand real sideline celebrations.</li>
                 </ul>
             </div>
 
+            <!-- V2 Frame & Wire Harness -->
             <div class="photo-grid">
                 <div class="photo-card">
-                    <img src="assets/M-BY-LED-NoCh-08.jpg" alt="LED Internals">
-                    <div class="photo-caption"><b>Internal Wire Harness:</b> Running the dense light strands through the guide framework.</div>
+                    <img src="assets/Frame-v2.jpg" alt="V2 Frame with Battery Cage">
+                    <div class="photo-caption"><b>Version 2 Framework:</b> Molded central battery cage with perforated guide bars for routed LED paths.</div>
                 </div>
                 <div class="photo-card">
-                    <img src="assets/M-BY-LED-NoCh-07.jpg" alt="Assembled Shell">
-                    <div class="photo-caption"><b>Shell Assembly:</b> Secure locking tabs hugging the faceplate flush to the backing.</div>
+                    <img src="assets/M-BY-LED-NoCh-08.jpg" alt="Internal LED Routing">
+                    <div class="photo-caption"><b>Tucking in the Harness:</b> Guiding the lighting array through internal channels before final assembly.</div>
                 </div>
                 <div class="photo-card">
-                    <img src="assets/M-BY-LED-NoCh-09.jpg" alt="Lit Test">
-                    <div class="photo-caption"><b>Glow Test:</b> High-output diffusion lighting the Marina "M" Star layout.</div>
+                    <img src="assets/M-BY-LED-NoCh-09.jpg" alt="Bench Illumination Test">
+                    <div class="photo-caption"><b>Full Bench Test:</b> Verifying uniform luminescence through the translucent faceplate.</div>
+                </div>
+            </div>
+
+            <!-- HUMBLE PROGRESS NOTE -->
+            <div class="craft-note">
+                <strong>An Honest Maker's Note:</strong> While these are built tough for game day, they aren't stamped out of a billion-dollar factory mold. Each one is designed, sliced, 3D printed, and assembled by hand in my workshop. Every single batch teaches me something new—whether it’s tightening tolerances by 0.2 millimeters, improving tab ergonomics, or optimizing light bounce. When you wear one of these pieces, you’re holding a design that continues to evolve and improve with every single print.
+            </div>
+
+            <!-- The Solar & Final Crest Execution -->
+            <h3 style="color: var(--text-light); margin: 30px 0 15px 0; font-size: 1.25rem;">The Field-Ready Solar Lineup</h3>
+            <p>
+                From bare internal frames to full game-day gear: the solar-charged line wraps the entire solar collector and power cell seamlessly inside the rear housing, letting the crest shine front and center on oversized gold links.
+            </p>
+
+            <div class="photo-grid">
+                <div class="photo-card">
+                    <img src="assets/M-BY-SLR-03.jpg" alt="Rear Solar Panel Integration">
+                    <div class="photo-caption"><b>Solar Integration:</b> Rear faceplate embedding the high-efficiency solar recharge cell.</div>
+                </div>
+                <div class="photo-card">
+                    <img src="assets/M-BY-SLR-02.jpg" alt="Solar Turnover Chain on Links">
+                    <div class="photo-caption"><b>Chain Assembly:</b> Mounted to oversized gold links, ready for pre-game daylight tailgates.</div>
+                </div>
+                <div class="photo-card">
+                    <img src="assets/M-BY-SLR-09.jpg" alt="Lit Marina Star Crest">
+                    <div class="photo-caption"><b>Night Walkout:</b> Clean contrast and glowing Marina "M" Star ready for kickoff.</div>
                 </div>
             </div>
         </article>
 
-        <!-- GAME DAY CALLOUT -->
+        <!-- FOOTER CTA -->
         <div class="story-footer">
             <h2 style="color: #fff; margin-bottom: 10px;">Ready to Rep Your Team?</h2>
             <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 15px auto;">
