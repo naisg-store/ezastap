@@ -365,20 +365,30 @@
 </div>
 <body>
 
+        <!-- STICKY SITE HEADER WITH COLLAPSIBLE MENU -->
     <header class="site-header">
         <div class="nav-container">
             <a href="index.html" class="brand-link">
                 <img src="EZ-logo-color.png" alt="EZ as Tap">
                 EZ as <span>Tap</span>
             </a>
-            <nav>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+
+            <nav class="nav-menu" id="navMenu">
                 <ul class="nav-list">
-                    <li><a href="spirit-gallery.html" class="nav-link">&larr; Back to Spirit Gallery</a></li>
+                    <li><a href="index.html" class="nav-link">Price Calculator</a></li>
+                    <li><a href="nfc-catalog.html" class="nav-link">Custom NFC Keychains</a></li>
+                    <li><a href="spirit-gallery.html" class="nav-link active">School Spirit Gear</a></li>
                 </ul>
             </nav>
         </div>
     </header>
-
+  
     <div class="story-hero">
         <span class="badge-tag">Behind The Build</span>
         <h1>From Bleacher Parents to Glowing Sideline Chains</h1>
