@@ -610,6 +610,49 @@
     -webkit-backdrop-filter: blur(10px);
     background-color: rgba(19, 27, 46, 0.88) !important;
 }
+        /* RETRO / CAMPY SLASHED PRICE STYLING */
+.price-box {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0 0 20px 0;
+}
+
+/* Angled original / was price */
+.slashed-price {
+    position: relative;
+    display: inline-block;
+    color: #ff5252;
+    font-size: 1.15em;
+    font-weight: 800;
+    transform: rotate(-10deg);
+    opacity: 0.85;
+    letter-spacing: -0.5px;
+    user-select: none;
+}
+
+/* Heavy diagonal red slash line */
+.slashed-price::after {
+    content: '';
+    position: absolute;
+    left: -15%;
+    top: 50%;
+    width: 130%;
+    height: 3px;
+    background: #ff1744;
+    transform: rotate(-16deg);
+    border-radius: 2px;
+    box-shadow: 0 0 6px rgba(255, 23, 68, 0.8);
+}
+
+/* Bold popping sale price */
+.sale-price {
+    color: var(--price-color, #4dc0b5);
+    font-size: 1.55em;
+    font-weight: 800;
+    text-shadow: 0 0 12px rgba(77, 192, 181, 0.4);
+    letter-spacing: -0.5px;
+}
     </style>
 </head>
 <body>
@@ -912,7 +955,12 @@ const spreadsheetData = [
             
             // Populate the split details section
             document.getElementById('lb-title').innerText = currentProduct.name;
-            document.getElementById('lb-price').innerText = currentProduct.price;
+            document.getElementById('lb-price').innerHTML = `
+                <div class="price-box" style="margin-bottom: 15px;">
+                    <span class="slashed-price" style="font-size: 1.35em;">${currentProduct.price}</span>
+                    <span class="sale-price" style="font-size: 1.9em;">${currentProduct.price}</span>
+                </div>
+            `;
             document.getElementById('lb-desc').innerHTML = currentProduct.description || "No description available.";
 
             document.getElementById('lightbox').classList.add('active');
@@ -998,7 +1046,10 @@ const spreadsheetData = [
                         </div>
                         <div class="product-info">
                             <h3 class="product-title">${item.name}</h3>
-                            <p class="price">${item.price}</p>
+                            <div class="price-box">
+                                <span class="slashed-price">${item.price}</span>
+                                <span class="sale-price">${item.price}</span>
+                        </div>
                             <button class="buy-btn" onclick="openLightbox('${item.id}', 0)">View Details</button>
                         </div>
                     </div>
