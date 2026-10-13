@@ -861,7 +861,7 @@
                 const subject = encodeURIComponent(`Order Request: ${currentProduct.name}`);
                 const priceText = currentProduct.sale ? currentProduct.sale : currentProduct.price;
                 const body = encodeURIComponent(`Hi EZ as Tap,\n\nI'd like to place a direct order for the following item:\n\nItem: ${currentProduct.name}\nPrice: ${priceText}\n\nPlease let me know the next steps for payment and timeline.\n\nThanks!`);
-                buyBtn.onclick = () => window.location.href = `mailto:ezastap@gmail.com?subject=${subject}&body=${body}`;
+                buyBtn.href = `mailto:ezastap@gmail.com?subject=${subject}&body=${body}`;
             }
             document.getElementById('lightbox').classList.add('active');
         }
