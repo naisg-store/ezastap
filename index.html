@@ -475,6 +475,47 @@
             color: var(--accent-blue);
             text-decoration: none;
         }
+        /* MAGIC INSIDE SPLIT LAYOUT */
+        .magic-split-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        @media (min-width: 850px) {
+            .magic-split-layout {
+                flex-direction: row;
+                align-items: stretch;
+            }
+        }
+
+        .magic-video-container {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 280px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(0, 162, 255, 0.15);
+            background: #000;
+        }
+
+        .demo-video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 22px;
+        }
+
+        .features-grid-compact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            flex-grow: 1;
+            align-content: center;
+        }
     </style>
 </head>
 <body>
@@ -534,26 +575,36 @@
                 <p class="section-desc">It looks like a premium keychain, but it acts like a digital Swiss Army knife. No apps, no subscriptions, just seamless interaction.</p>
             </div>
             
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="feature-icon">📱</span>
-                    <h3>Zero Apps Required</h3>
-                    <p>Tap your keychain against any modern iPhone or Android to instantly launch your link. It works straight out of the box natively on their device.</p>
+            <div class="magic-split-layout">
+                <!-- The Vertical Video Demo -->
+                <div class="magic-video-container">
+                    <video autoplay loop muted playsinline class="demo-video">
+                        <source src="your-short-video.mp4" type="video/mp4">
+                    </video>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🤝</span>
-                    <h3>The Digital Handshake</h3>
-                    <p>Share your contact card (vCard), link-in-bio, online portfolio, or direct booking page in a fraction of a second.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">⭐</span>
-                    <h3>Review Magnet</h3>
-                    <p>Set your tag to open your Google Business profile and capture 5-star reviews before you even leave the driveway or finish the service.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">💳</span>
-                    <h3>Instant Payments & Wi-Fi</h3>
-                    <p>Collect tips via Venmo or CashApp instantly, or let guests tap to securely join your Wi-Fi network without typing passwords.</p>
+
+                <!-- The Features Grid -->
+                <div class="features-grid-compact">
+                    <div class="feature-card">
+                        <span class="feature-icon">📱</span>
+                        <h3>Zero Apps Required</h3>
+                        <p>Tap your keychain against any modern iPhone or Android to instantly launch your link natively on their device.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🤝</span>
+                        <h3>Digital Handshake</h3>
+                        <p>Share your contact card (vCard), link-in-bio, online portfolio, or direct booking page in a fraction of a second.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">⭐</span>
+                        <h3>Review Magnet</h3>
+                        <p>Set your tag to open your Google Business profile and capture 5-star reviews right on the spot.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">💳</span>
+                        <h3>Payments & Wi-Fi</h3>
+                        <p>Collect tips via Venmo or CashApp instantly, or let guests tap to securely join your Wi-Fi network.</p>
+                    </div>
                 </div>
             </div>
         </section>
