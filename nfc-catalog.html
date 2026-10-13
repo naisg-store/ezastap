@@ -657,7 +657,16 @@
                 <h2 id="lb-title"></h2>
                 <div id="lb-price"></div>
                 <div id="lb-desc"></div>
-                <button class="buy-btn" style="margin-top:20px;" onclick="window.location.href='index.html'">Inquire / Quote</button>
+                
+                <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <p style="font-size: 0.95rem; color: var(--accent-cyan); margin-bottom: 10px; font-weight: 600;">
+                        🚧 Online checkout launching soon!
+                    </p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
+                        We are accepting direct orders right now. Click below to email your request, and we'll send over a secure Square invoice or Venmo/CashApp details.
+                    </p>
+                    <button id="lb-buy-btn" class="buy-btn" style="width: 100%;">Direct Order via Email</button>
+                </div>
             </div>
         </div>
     </div>
@@ -846,7 +855,14 @@
                 lbPriceElem.innerText = currentProduct.price;
             }
             document.getElementById('lb-desc').innerHTML = currentProduct.description || "No description available.";
-
+            // Automatically draft the email for the specific product
+            const buyBtn = document.getElementById('lb-buy-btn');
+            if (buyBtn) {
+                const subject = encodeURIComponent(`Order Request: ${currentProduct.name}`);
+                const priceText = currentProduct.sale ? currentProduct.sale : currentProduct.price;
+                const body = encodeURIComponent(`Hi EZ as Tap,\n\nI'd like to place a direct order for the following item:\n\nItem: ${currentProduct.name}\nPrice: ${priceText}\n\nPlease let me know the next steps for payment and timeline.\n\nThanks!`);
+                buyBtn.onclick = () => window.location.href = `mailto:ezastap@gmail.com?subject=${subject}&body=${body}`;
+            }
             document.getElementById('lightbox').classList.add('active');
         }
 
