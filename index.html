@@ -493,20 +493,33 @@
 
         .magic-video-container {
             flex-shrink: 0;
-            width: 100%;
-            max-width: 280px;
+            /* Set a fixed width for desktop */
+            width: 280px;
+            /* Use aspect-ratio to lock the height perfectly to the width */
+            aspect-ratio: 9/16.5; /* Slightly taller than standard 9:16 */
             border-radius: 24px;
             overflow: hidden;
             border: 2px solid var(--border-color);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(0, 162, 255, 0.15);
             background: #000;
+            /* Ensure it centers on mobile */
+            margin: 0 auto;
         }
 
         .demo-video {
             width: 100%;
-            height: auto;
+            height: 100%; /* Fill the container completely */
+            object-fit: cover; /* Crop the video to fill the space if needed */
             display: block;
             border-radius: 22px;
+        }
+
+        /* Mobile adjustment */
+        @media (max-width: 849px) {
+            .magic-video-container {
+                width: 100%; /* Take full width on phones */
+                max-width: 280px; /* But don't get too huge */
+            }
         }
 
         .features-grid-compact {
