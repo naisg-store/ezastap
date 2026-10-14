@@ -866,16 +866,25 @@
                 lbPriceElem.innerText = currentProduct.price;
             }
             document.getElementById('lb-desc').innerHTML = currentProduct.description || "No description available.";
-            // Automatically draft the email for the specific product
-            const buyBtn = document.getElementById('lb-buy-btn');
+                       
+const buyBtn = document.getElementById('lb-buy-btn');
             if (buyBtn) {
-                const subject = encodeURIComponent(`Order Request: ${currentProduct.name}`);
-                const priceText = currentProduct.sale ? currentProduct.sale : currentProduct.price;
-                const body = encodeURIComponent(`Hi EZ as Tap,\n\nI'd like to place a direct order for the following item:\n\nItem: ${currentProduct.name}\nPrice: ${priceText}\n\nPlease let me know the next steps for payment and timeline.\n\nThanks!`);
-                buyBtn.href = `mailto:ezastap@gmail.com?subject=${subject}&body=${body}`;
+                if (currentProduct.squareLink) {
+                    // Direct them straight to Square checkout if the link exists
+                    buyBtn.innerText = "Check Out Securely with Square";
+                    buyBtn.href = currentProduct.squareLink;
+                    buyBtn.target = "_blank"; // Opens in a new tab
+                } else {
+                    // Fallback to email if no square link is provided
+                    buyBtn.innerText = "Direct Order via Email";
+                    buyBtn.removeAttribute('target');
+                    const subject = encodeURIComponent(`Order Request: ${currentProduct.name}`);
+                    const priceText = currentProduct.sale ? currentProduct.sale : currentProduct.price;
+                    const body = encodeURIComponent(`Hi EZ as Tap,\n\nI'd like to place a direct order for the following item:\n\nItem: ${currentProduct.name}\nPrice: ${priceText}\n\nPlease let me know the next steps for payment and timeline.\n\nThanks!`);
+                    buyBtn.href = `mailto:ezastap@gmail.com?subject=${subject}&body=${body}`;
+                }
             }
             document.getElementById('lightbox').classList.add('active');
-        }
 
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
