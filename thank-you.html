@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Thank You! | EZ as Tap</title>
+    <style>
+        :root {
+            --bg-dark: #0a0f1d;
+            --card-bg: rgba(19, 27, 46, 0.92);
+            --panel-bg: #18233c;
+            --accent-blue: #00a2ff;
+            --accent-cyan: #00d2ff;
+            --text-light: #ecf0f1;
+            --text-muted: #8a99ad;
+            --border-color: #1e2d4a;
+            --success-green: #2ecc71;
+            --accent-glow: rgba(0, 162, 255, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* STICKY COLLAPSIBLE HEADER */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 29, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-link img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .brand-link span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-list {
+            display: flex;
+            gap: 1.25rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* THANK YOU CONTAINER */
+        .thankyou-container {
+            max-width: 750px;
+            margin: 60px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .thankyou-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 25px rgba(0, 162, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .thankyou-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), var(--success-green));
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        h1 {
+            color: var(--accent-cyan);
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .message-body {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 35px;
+        }
+
+        .message-body strong {
+            color: var(--text-light);
+        }
+
+        /* QUICK NAVIGATION CARDS */
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .quick-link-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: all 0.25s ease;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 5px 15px rgba(0, 162, 255, 0.2);
+        }
+
+        .quick-link-title {
+            color: var(--text-light);
+            font-weight: 700;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-link-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            background: rgba(10, 15, 29, 0.9);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .thankyou-card { padding: 30px 20px; }
+            h1 { font-size: 2.2rem; }
+            .quick-links-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STICKY SITE HEADER -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <img src="EZ-logo-color.png" alt="EZ as Tap">
+                EZ as <span>Tap</span>
+            </a>
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="nfc-catalog.html" class="nav-link">Custom NFC Keychains</a></li>
+                    <li><a href="spirit-gallery.html" class="nav-link">School Spirit Gear</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- THANK YOU CONTENT WRAPPER -->
+    <div class="thankyou-container">
+        <div class="thankyou-card">
+            <span class="success-icon">🎉</span>
+            <h1>Thank You!</h1>
+            <p class="subtitle">Your order has been securely received.</p>
+            
+            <div class="message-body">
+                <p>
+                    Seriously—thank you! Supporting independent local makers means the world to us. Every single piece is designed, 3D printed, and assembled right here in Huntington Beach, Surf City USA. 
+                </p>
+                <p style="margin-top: 12px;">
+                    We are already getting your hardware ready. If you ordered a custom logo or design, keep an eye on your email for your digital proof and next steps!
+                </p>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 25px;">
+                <p style="font-size: 0.9rem; font-weight: 600; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px;">
+                    Where would you like to go next?
+                </p>
+
+                <div class="quick-links-grid">
+                    <a href="index.html" class="quick-link-card">
+                        <div class="quick-link-title">🏠 Home</div>
+                        <div class="quick-link-desc">Back to the main landing page overview.</div>
+                    </a>
+
+                    <a href="nfc-catalog.html" class="quick-link-card">
+                        <div class="quick-link-title">🔑 NFC Keychains</div>
+                        <div class="quick-link-desc">Browse more custom smart hardware tags.</div>
+                    </a>
+
+                    <a href="spirit-gallery.html" class="quick-link-card">
+                        <div class="quick-link-title">⚡ Spirit Gear</div>
+                        <div class="quick-link-desc">Check out our glowing turnover chains.</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>EZ as Tap</strong> &mdash; Custom NFC Keychains, Made Locally in Huntington Beach</p>
+        <p style="margin-top: 6px;">
+            Questions about your order? Reach out anytime at <a href="mailto:ezastap@gmail.com">ezastap@gmail.com</a>
+        </p>
+    </footer>
+
+</body>
+</html>
