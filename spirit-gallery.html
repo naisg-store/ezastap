@@ -744,7 +744,7 @@
     </div>
 
     <!-- The Full-Screen Lightbox Container (Split Media & Details View) -->
-    <div id="lightbox" class="lightbox">
+    <div id="lightbox" class="lightbox "onclick="closeOnBackdrop(event)">
         <div class="lb-close" onclick="closeLightbox()">&#215;</div>
         
         <div class="lightbox-content">
@@ -1035,6 +1035,12 @@ const spreadsheetData = [
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
             document.getElementById('lb-media-inner').innerHTML = '';
+        }
+        function closeOnBackdrop(event) {
+            // If they clicked the dark background wrapper directly, close it
+            if (event.target.id === 'lightbox') {
+                closeLightbox();
+            }
         }
 
         function navigateLightbox(direction) {
